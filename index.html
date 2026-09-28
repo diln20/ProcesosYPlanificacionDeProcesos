@@ -943,59 +943,72 @@ setTimeout(() => {
 <div class="tabs"><button class="tab active" data-g="srtf" data-t="srtfj">Java</button><button class="tab" data-g="srtf" data-t="srtfp">Python</button></div>
 
 <div id="srtfj" class="code-panel active"><div class="codebox"><div class="codebar">SRTF.java</div><pre><code class="language-java">public class SRTF {
+
     public static void main(String[] args) {
 
+        // Creamos las tareas con su tiempo de llegada
         Proceso[] lista = {
             new Proceso("Tarea larga", 0, 7, 1),
             new Proceso("Llamada corta", 2, 4, 1),
             new Proceso("Mensaje rapido", 4, 1, 1)
         };
 
-        // Solo para la demostracion:
-        // esperamos un poco para representar el paso del tiempo
-        try {
-            Thread.sleep(1000);
-        } catch (Exception error) {
-            System.out.println("Error en la pausa");
-        }
-
         int tiempo = 0;
         int terminados = 0;
 
         while (terminados &lt; lista.length) {
 
+            // Aqui guardamos la tarea con menor tiempo restante
             Proceso mejor = null;
 
-            // Recorremos todos los procesos
+            // Recorremos la lista posicion por posicion
             for (int i = 0; i &lt; lista.length; i++) {
 
                 Proceso proceso = lista[i];
 
-                // Solo miramos los que ya llegaron
+                // Solo miramos las tareas que ya llegaron
                 if (proceso.llegada &lt;= tiempo &amp;&amp; proceso.restante &gt; 0) {
 
-                    // Escogemos el que tenga menos tiempo restante
+                    // Si no tenemos una tarea o esta tarda menos, la escogemos
                     if (mejor == null || proceso.restante &lt; mejor.restante) {
                         mejor = proceso;
                     }
                 }
             }
 
+            // Si todavia no ha llegado ninguna tarea
             if (mejor == null) {
-                tiempo++;
+
+                System.out.println("Tiempo " + tiempo + ": CPU esperando");
+
             } else {
 
-                System.out.println("Tiempo " + tiempo + ": " + mejor.nombre);
+                // Mostramos la tarea que usa la CPU
+                System.out.println(
+                    "Tiempo " + tiempo +
+                    ": ejecuta " + mejor.nombre +
+                    " | restante: " + mejor.restante
+                );
 
                 // Ejecutamos solo una unidad de tiempo
                 mejor.restante--;
-                tiempo++;
 
-                // Si ya no le queda tiempo, termino
+                // Si ya no le queda tiempo, la tarea termino
                 if (mejor.restante == 0) {
                     terminados++;
+                    System.out.println(mejor.nombre + " termino");
                 }
             }
+
+            // Esperamos un segundo para simular una unidad de tiempo
+            try {
+                Thread.sleep(1000);
+            } catch (Exception error) {
+                System.out.println("Error en la pausa");
+            }
+
+            // Avanzamos una unidad de tiempo
+            tiempo++;
         }
     }
 }</code></pre></div></div>
