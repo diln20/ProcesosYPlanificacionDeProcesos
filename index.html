@@ -430,6 +430,71 @@ pre code{
   opacity:1!important;
 }
 
+
+/* ===== Simulacion visual SRTF con timeout ===== */
+.srtf-sim{
+  margin:18px 0;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:var(--panel2);
+  padding:16px;
+}
+.srtf-sim-head{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:14px;
+}
+.srtf-sim-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.srtf-box{
+  min-height:110px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:14px;
+  background:var(--panel);
+}
+.srtf-box h4{
+  margin:0 0 10px;
+  color:var(--a);
+}
+.srtf-chip{
+  display:inline-block;
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:800;
+  margin:5px;
+  border:1px solid rgba(255,255,255,.15);
+  transition:.25s ease;
+}
+.srtf-chip.long{background:#2563eb;color:#fff}
+.srtf-chip.short{background:#ec4899;color:#fff}
+.srtf-chip.fast{background:#10b981;color:#fff}
+.srtf-chip.waiting{opacity:.72;transform:scale(.96)}
+.srtf-chip.running{
+  box-shadow:0 0 0 5px rgba(251,191,36,.20);
+  transform:scale(1.05);
+}
+.srtf-event{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:12px;
+  border-left:4px solid var(--warn);
+  background:var(--panel);
+}
+.srtf-time{
+  font-weight:900;
+  color:var(--warn);
+}
+@media(max-width:700px){
+  .srtf-sim-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -822,6 +887,37 @@ F --> G["Mensaje rapido termina"]
 G --> H["Se comparan las tareas que quedan"]</div></div>
 
 <div class="goal"><b>Idea clave:</b> SRTF es apropiativo. Puede quitarle la CPU a un proceso si llega otro con menor tiempo restante.</div>
+
+<div class="srtf-sim">
+  <div class="srtf-sim-head">
+    <div>
+      <strong>Simulacion SRTF con llegada tardia</strong>
+      <div class="small">Usa <code>setTimeout</code> para simular que llega una tarea mas corta mientras otra esta usando la CPU.</div>
+    </div>
+    <div>
+      <button class="btn" onclick="iniciarSimulacionSRTF()">▶ Iniciar simulacion</button>
+      <button class="btn" onclick="reiniciarSimulacionSRTF()">↺ Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="srtf-sim-grid">
+    <div class="srtf-box">
+      <h4>CPU</h4>
+      <div id="srtfCpu">Sin iniciar</div>
+    </div>
+
+    <div class="srtf-box">
+      <h4>Cola de listos</h4>
+      <div id="srtfCola">Vacia</div>
+    </div>
+  </div>
+
+  <div class="srtf-event">
+    <span class="srtf-time" id="srtfTiempo">Tiempo: 0</span>
+    <div id="srtfEvento">Pulsa iniciar para ver como un proceso mas corto desplaza al actual.</div>
+  </div>
+</div>
+
 
 <div class="tabs"><button class="tab active" data-g="srtf" data-t="srtfj">Java</button><button class="tab" data-g="srtf" data-t="srtfp">Python</button></div>
 
@@ -1353,6 +1449,17 @@ function corregirEtiquetasMermaid(bloque){
         const etiquetas=[...svg.querySelectorAll(".edgeLabel")];
 
         etiquetas.forEach((etiqueta)=>{
+
+          // Si la etiqueta no tiene texto real, la ocultamos.
+          // Esto evita pequenos ovalos o recuadros vacios.
+          const contenidoTexto=(etiqueta.textContent || "").trim();
+
+          if(contenidoTexto === ""){
+            etiqueta.querySelectorAll("rect,.labelBkg").forEach((nodo)=>nodo.remove());
+            etiqueta.style.display="none";
+            return;
+          }
+
           // Texto SVG
           etiqueta.querySelectorAll("text,tspan").forEach((nodo)=>{
             nodo.style.setProperty("fill","#111827","important");
@@ -1722,6 +1829,121 @@ function configurarTabsQuizYNavegacion(){
   }
 }
 
+
+let srtfTimers=[];
+
+function limpiarTimersSRTF(){
+  for(let i=0;i<srtfTimers.length;i++){
+    clearTimeout(srtfTimers[i]);
+  }
+
+  srtfTimers=[];
+}
+
+function mostrarCpuSRTF(nombre, restante, clase){
+  const cpu=document.getElementById("srtfCpu");
+
+  if(!cpu)return;
+
+  cpu.innerHTML=
+    '<span class="srtf-chip running '+clase+'">'+
+    nombre+' · restante '+restante+
+    '</span>';
+}
+
+function mostrarColaSRTF(items){
+  const cola=document.getElementById("srtfCola");
+
+  if(!cola)return;
+
+  if(items.length === 0){
+    cola.textContent="Vacia";
+    return;
+  }
+
+  cola.innerHTML="";
+
+  for(let i=0;i<items.length;i++){
+    const item=items[i];
+
+    const chip=document.createElement("span");
+    chip.className="srtf-chip waiting "+item.clase;
+    chip.textContent=item.nombre+" · restante "+item.restante;
+
+    cola.appendChild(chip);
+  }
+}
+
+function eventoSRTF(tiempo, texto){
+  const tiempoBox=document.getElementById("srtfTiempo");
+  const eventoBox=document.getElementById("srtfEvento");
+
+  if(tiempoBox) tiempoBox.textContent="Tiempo: "+tiempo;
+  if(eventoBox) eventoBox.textContent=texto;
+}
+
+function reiniciarSimulacionSRTF(){
+  limpiarTimersSRTF();
+
+  const cpu=document.getElementById("srtfCpu");
+  const cola=document.getElementById("srtfCola");
+
+  if(cpu) cpu.textContent="Sin iniciar";
+  if(cola) cola.textContent="Vacia";
+
+  eventoSRTF(0,"Pulsa iniciar para ver como un proceso mas corto desplaza al actual.");
+}
+
+function iniciarSimulacionSRTF(){
+  reiniciarSimulacionSRTF();
+
+  // Tiempo 0: empieza una tarea larga.
+  mostrarCpuSRTF("Tarea larga",7,"long");
+  mostrarColaSRTF([]);
+  eventoSRTF(0,"Empieza Tarea larga. Necesita 7 unidades de tiempo.");
+
+  // Despues de 1.5 segundos simulamos que pasan 2 unidades.
+  srtfTimers.push(setTimeout(()=>{
+    mostrarCpuSRTF("Tarea larga",5,"long");
+    eventoSRTF(2,"La tarea larga sigue ejecutando. Ahora le faltan 5.");
+  },1500));
+
+  // Llega una tarea mas corta.
+  srtfTimers.push(setTimeout(()=>{
+    mostrarColaSRTF([
+      {nombre:"Llamada corta",restante:2,clase:"short"}
+    ]);
+
+    eventoSRTF(2,"Llega Llamada corta con tiempo 2. Como 2 es menor que 5, SRTF debe cambiar.");
+  },2600));
+
+  // SRTF interrumpe la tarea larga y entrega la CPU a la corta.
+  srtfTimers.push(setTimeout(()=>{
+    mostrarCpuSRTF("Llamada corta",2,"short");
+
+    mostrarColaSRTF([
+      {nombre:"Tarea larga",restante:5,clase:"long"}
+    ]);
+
+    eventoSRTF(2,"La llamada corta toma la CPU. La tarea larga vuelve a la cola.");
+  },3700));
+
+  // La tarea corta termina.
+  srtfTimers.push(setTimeout(()=>{
+    mostrarCpuSRTF("Llamada corta",0,"short");
+
+    eventoSRTF(4,"La llamada corta termina.");
+  },5000));
+
+  // Se retoma la tarea larga.
+  srtfTimers.push(setTimeout(()=>{
+    mostrarCpuSRTF("Tarea larga",5,"long");
+    mostrarColaSRTF([]);
+
+    eventoSRTF(4,"La CPU vuelve a la tarea larga porque ya no hay otra tarea mas corta.");
+  },6100));
+}
+
 function calificar(){
   let n=0;
   document.querySelectorAll(".quiz").forEach(q=>{
@@ -1736,6 +1958,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
   document.documentElement.classList.add("aos-enabled");
   iniciarLibrerias();
   configurarTabsQuizYNavegacion();
+  reiniciarSimulacionSRTF();
 
   // Mermaid se procesa de forma independiente. Si cualquier otra librería falla,
   // el contenido del taller sigue visible.
