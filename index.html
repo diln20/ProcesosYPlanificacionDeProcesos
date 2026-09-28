@@ -76,6 +76,71 @@
 .section,.hero,.content{opacity:1!important;visibility:visible!important;transform:none}
 html.aos-enabled .section[data-aos]{opacity:1!important;visibility:visible!important}
 
+
+/* ===== Contraste del editor de código en tema claro y oscuro ===== */
+.codebox,.code-window{
+  background:#0b1020!important;
+  border-color:#263650!important;
+}
+.codebar,.code-bar{
+  background:linear-gradient(180deg,#182235,#121a2a)!important;
+  color:#d9e5f7!important;
+  border-bottom-color:#2d3b55!important;
+}
+pre, pre code, code.hljs, .hljs{
+  background:#0b1020!important;
+  color:#d8e6f7!important;
+}
+pre code{
+  display:block;
+  font-weight:500;
+  text-shadow:none!important;
+}
+.hljs-keyword,.hljs-selector-tag,.hljs-literal,.hljs-section{
+  color:#c084fc!important;
+  font-weight:700;
+}
+.hljs-string,.hljs-attr,.hljs-template-tag,.hljs-template-variable{
+  color:#86efac!important;
+}
+.hljs-title,.hljs-title.function_,.hljs-function .hljs-title{
+  color:#67e8f9!important;
+}
+.hljs-number,.hljs-symbol,.hljs-bullet{
+  color:#fbbf24!important;
+}
+.hljs-built_in,.hljs-type,.hljs-class .hljs-title{
+  color:#38bdf8!important;
+}
+.hljs-variable,.hljs-property,.hljs-params{
+  color:#f0abfc!important;
+}
+.hljs-tag,.hljs-name,.hljs-selector-class,.hljs-selector-id{
+  color:#fb7185!important;
+}
+.hljs-attribute{
+  color:#f9a8d4!important;
+}
+.hljs-comment,.hljs-quote{
+  color:#94a3b8!important;
+  font-style:italic;
+}
+.hljs-meta,.hljs-doctag{
+  color:#22d3ee!important;
+}
+/* Si Highlight.js no carga, el código sigue siendo legible */
+[data-theme="light"] pre,
+[data-theme="light"] pre code,
+[data-theme="light"] code.hljs,
+[data-theme="light"] .hljs,
+[data-theme="dark"] pre,
+[data-theme="dark"] pre code,
+[data-theme="dark"] code.hljs,
+[data-theme="dark"] .hljs{
+  color:#d8e6f7!important;
+  background:#0b1020!important;
+}
+
 </style>
 </head>
 <body>
