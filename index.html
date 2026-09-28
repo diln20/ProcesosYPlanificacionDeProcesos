@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Procesos y Planificación de Procesos</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/atom-one-dark.min.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/highlight.min.js"></script>
+<style>
+:root{--bg:#07101d;--panel:#0e1a2c;--panel2:#13243a;--text:#edf4ff;--muted:#9db1ca;--line:#27415f;--a:#61dafb;--b:#a78bfa;--ok:#34d399;--warn:#fbbf24;--code:#0b1020}
+[data-theme="light"]{--bg:#eef4fb;--panel:#fff;--panel2:#f5f8fc;--text:#152238;--muted:#5c6c81;--line:#d7e1ed;--a:#0284c7;--b:#7c3aed;--ok:#059669;--warn:#b7791f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.65}.layout{display:grid;grid-template-columns:290px 1fr;min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:22px 16px;border-right:1px solid var(--line);background:var(--panel)}main{min-width:0}.brand{font-weight:900;font-size:18px;margin-bottom:16px}.brand small{display:block;font-size:12px;color:var(--muted);font-weight:500}.nav{display:grid;gap:5px}.nav a{display:flex;gap:9px;align-items:center;padding:9px 10px;border-radius:10px;color:var(--muted);text-decoration:none;border:1px solid transparent}.nav a:hover,.nav a.active{color:var(--text);background:var(--panel2);border-color:var(--line)}.num{width:27px;height:27px;display:grid;place-items:center;border-radius:8px;background:var(--panel2);color:var(--a);font-size:11px;font-weight:900}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 11px;border-radius:10px;cursor:pointer;margin-bottom:14px}.hero{padding:64px 7vw 38px;border-bottom:1px solid var(--line);background:radial-gradient(circle at 10% 10%,rgba(97,218,251,.15),transparent 30%),radial-gradient(circle at 85% 5%,rgba(167,139,250,.18),transparent 30%)}.hero h1{font-size:clamp(38px,5vw,68px);line-height:1.03;margin:8px 0 16px;max-width:1000px}.hero p{font-size:18px;color:var(--muted);max-width:900px}.eyebrow{color:var(--a);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:900}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.badge{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);font-size:12px;color:var(--muted)}.content{width:min(1180px,92%);margin:auto;padding:40px 0 90px}.section{scroll-margin-top:18px;padding:24px;margin-bottom:26px;border:1px solid var(--line);border-radius:20px;background:var(--panel)}.section h2{margin:0 0 8px;font-size:29px}.section h3{margin-top:22px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.card strong{display:block;color:var(--a);margin-bottom:5px}.note,.warn,.goal{padding:13px 15px;margin:14px 0;border-radius:11px;background:var(--panel2)}.note{border-left:4px solid var(--b)}.warn{border-left:4px solid var(--warn)}.goal{border-left:4px solid var(--a)}.diagram{padding:18px;margin:16px 0;border:1px solid var(--line);border-radius:16px;background:#f8fbff;color:#152238;overflow:auto}.diagram .mermaid{min-width:600px}.table{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}th{background:var(--panel2);color:var(--a)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tab{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer}.tab.active{background:linear-gradient(135deg,var(--a),var(--b));color:#07101d;border-color:transparent}.code-panel{display:none}.code-panel.active{display:block}.codebox{overflow:hidden;border:1px solid #283650;border-radius:14px;background:var(--code);margin:12px 0}.codebar{padding:9px 12px;border-bottom:1px solid #26344f;background:#141d2e;color:#b8c5d8;font-size:12px}pre{margin:0;padding:16px;overflow:auto;background:var(--code);font-size:13px;line-height:1.65}.gantt{display:flex;overflow:auto;margin:12px 0;border:1px solid var(--line);border-radius:12px}.gantt span{min-width:90px;padding:14px 10px;text-align:center;background:var(--panel2);border-right:1px solid var(--line);font-weight:900}.exercise{padding:15px;margin:12px 0;border:1px dashed var(--a);border-radius:14px;background:var(--panel2)}.quiz label{display:block;padding:9px 11px;margin:6px 0;border:1px solid var(--line);border-radius:9px;background:var(--panel2)}.footer{text-align:center;color:var(--muted);padding:30px}.mobile{display:none}@media(max-width:950px){.layout{display:block}aside{position:fixed;z-index:30;left:0;top:0;width:min(88vw,330px);transform:translateX(-105%);transition:.2s}.menu-open aside{transform:translateX(0)}.mobile{display:flex;position:sticky;top:0;z-index:20;justify-content:space-between;padding:9px 12px;background:var(--panel);border-bottom:1px solid var(--line)}.grid2,.grid3{grid-template-columns:1fr}.hero{padding:48px 22px 30px}}
+</style>
+</head>
+<body>
+<div class="mobile"><button class="btn" onclick="document.body.classList.toggle('menu-open')">☰ Menú</button><b>Procesos</b><button class="btn" onclick="tema()">Tema</button></div>
+<div class="layout">
+<aside>
+<div class="brand">Procesos y Planificación<small>Taller explicativo desde cero</small></div>
+<button class="btn" onclick="tema()">☀ / ☾ Cambiar tema</button>
+<nav class="nav">
+<a href="#proceso"><span class="num">01</span>¿Qué es un proceso?</a>
+<a href="#estados"><span class="num">02</span>PID, PCB y estados</a>
+<a href="#familia"><span class="num">03</span>Padres e hijos</a>
+<a href="#planificar"><span class="num">04</span>Planificación</a>
+<a href="#metricas"><span class="num">05</span>Métricas</a>
+<a href="#objeto"><span class="num">06</span>Objeto Proceso</a>
+<a href="#fcfs"><span class="num">07</span>FCFS</a>
+<a href="#sjf"><span class="num">08</span>SJF</a>
+<a href="#prioridad"><span class="num">09</span>Prioridad</a>
+<a href="#rr"><span class="num">10</span>Round Robin</a>
+<a href="#multinivel"><span class="num">11</span>Colas multinivel</a>
+<a href="#mlfq"><span class="num">12</span>MLFQ básico</a>
+<a href="#comparar"><span class="num">13</span>Comparación</a>
+<a href="#taller"><span class="num">14</span>Actividades</a>
+<a href="#quiz"><span class="num">15</span>Repaso final</a>
+</nav>
+</aside>
+<main>
+<header class="hero">
+<div class="eyebrow">Sistemas operativos · nivel inicial</div>
+<h1>Procesos y planificación de procesos</h1>
+<p>Un taller para estudiantes que están empezando. Se trabaja con sintaxis sencilla, ejemplos visuales y el mismo objeto <b>Proceso</b> en Java y Python para entender qué hace cada algoritmo sin distraerse con estructuras avanzadas.</p>
+<div class="badges"><span class="badge">Java básico</span><span class="badge">Python básico</span><span class="badge">Diagramas</span><span class="badge">Gantt</span><span class="badge">Ejercicios</span></div>
+</header>
+<div class="content">
+
+<section class="section" id="proceso"><h2>1. Repaso: ¿qué es un proceso?</h2>
+<p>Un <b>programa</b> es un conjunto de instrucciones guardadas. Un <b>proceso</b> es ese programa cuando está en ejecución y el sistema operativo lo administra.</p>
+<div class="grid3"><div class="card"><strong>Programa</strong>Está almacenado. Aún no está corriendo.</div><div class="card"><strong>Proceso</strong>Programa en ejecución con memoria, estado e identificador.</div><div class="card"><strong>CPU</strong>Ejecuta las instrucciones de los procesos.</div></div>
+<div class="diagram"><div class="mermaid">flowchart LR
+A[Programa] --> B[Se inicia]
+B --> C[Proceso]
+C --> D[Cola de listos]
+D --> E[CPU]
+E --> F[Termina]</div></div>
+<div class="goal"><b>Ejemplo cotidiano:</b> abrir el navegador crea procesos que el sistema operativo debe identificar, organizar y ejecutar.</div></section>
+
+<section class="section" id="estados"><h2>2. PID, PCB y estados</h2>
+<p>El <b>PID</b> es un identificador único. El <b>PCB</b> representa la información que el sistema guarda para administrar cada proceso: PID, estado, prioridad y otros datos.</p>
+<div class="diagram"><div class="mermaid">stateDiagram-v2
+[*] --> Nuevo
+Nuevo --> Listo
+Listo --> Ejecutando
+Ejecutando --> Listo: pierde el turno
+Ejecutando --> Bloqueado: espera E/S
+Bloqueado --> Listo: termina espera
+Ejecutando --> Terminado
+Terminado --> [*]</div></div>
+<div class="grid2"><div class="card"><strong>Listo</strong>Quiere CPU, pero todavía espera su turno.</div><div class="card"><strong>Bloqueado</strong>No puede seguir hasta que ocurra algo, por ejemplo terminar una lectura.</div></div></section>
+
+<section class="section" id="familia"><h2>3. Procesos padre, hijo y huérfanos</h2>
+<p>Un proceso puede crear otros procesos. El que crea es el <b>padre</b> y el creado es el <b>hijo</b>. Si el padre termina pero el hijo continúa, el hijo queda huérfano. También existen escenarios de terminación en cascada.</p>
+<div class="diagram"><div class="mermaid">flowchart TD
+P[Proceso padre] --> H1[Hijo 1]
+P --> H2[Hijo 2]
+H1 --> N[Nieto]
+P -. termina .-> O[Hijo puede continuar]
+P -. cascada .-> X[Hijos también terminan]</div></div></section>
+
+<section class="section" id="planificar"><h2>4. ¿Por qué planificar?</h2>
+<p>Cuando varios procesos están listos, el sistema operativo necesita decidir quién usa la CPU. Esa decisión la realiza el <b>planificador</b>.</p>
+<div class="diagram"><div class="mermaid">flowchart LR
+Q[Procesos listos] --> S[Planificador]
+S --> CPU[CPU]
+CPU -->|termina| F[Finalizado]
+CPU -->|sale temporalmente| Q</div></div>
+<div class="grid2"><div class="card"><strong>No apropiativa</strong>El proceso conserva la CPU hasta terminar o bloquearse.</div><div class="card"><strong>Apropiativa</strong>El sistema puede interrumpirlo y darle la CPU a otro proceso.</div></div></section>
+
+<section class="section" id="metricas"><h2>5. Métricas y conceptos</h2>
+<div class="table"><table><thead><tr><th>Concepto</th><th>Explicación sencilla</th></tr></thead><tbody>
+<tr><td>Llegada</td><td>Momento en que el proceso entra al sistema.</td></tr>
+<tr><td>Ráfaga</td><td>Tiempo de CPU que necesita.</td></tr>
+<tr><td>Espera</td><td>Tiempo que permanece esperando CPU.</td></tr>
+<tr><td>Retorno</td><td>Tiempo desde que llega hasta que termina.</td></tr>
+<tr><td>Respuesta</td><td>Tiempo hasta recibir CPU por primera vez.</td></tr>
+<tr><td>Quantum</td><td>Turno máximo usado en Round Robin.</td></tr></tbody></table></div>
+<div class="grid2" style="margin-top:14px"><div class="card"><strong>Inanición</strong>Un proceso espera demasiado porque otros siempre pasan primero.</div><div class="card"><strong>Envejecimiento (aging)</strong>Su prioridad puede aumentar con el tiempo para darle oportunidad.</div></div></section>
+
+<section class="section" id="objeto"><h2>6. El objeto Proceso que usaremos</h2>
+<p>Todos los algoritmos reutilizan un objeto sencillo. Esto hace que el estudiante se concentre en la lógica.</p>
+<div class="tabs"><button class="tab active" data-g="obj" data-t="objj">Java</button><button class="tab" data-g="obj" data-t="objp">Python</button></div>
+<div id="objj" class="code-panel active"><div class="codebox"><div class="codebar">Proceso.java</div><pre><code class="language-java">public class Proceso {
+    String nombre;
+    int llegada;
+    int rafaga;
+    int prioridad;
+
+    public Proceso(String nombre, int llegada, int rafaga, int prioridad) {
+        this.nombre = nombre;
+        this.llegada = llegada;
+        this.rafaga = rafaga;
+        this.prioridad = prioridad;
+    }
+}</code></pre></div></div>
+<div id="objp" class="code-panel"><div class="codebox"><div class="codebar">proceso.py</div><pre><code class="language-python">class Proceso:
+    def __init__(self, nombre, llegada, rafaga, prioridad):
+        self.nombre = nombre
+        self.llegada = llegada
+        self.rafaga = rafaga
+        self.prioridad = prioridad</code></pre></div></div>
+<div class="note"><b>Qué significa <code>this.nombre = nombre</code>:</b> el dato recibido por el constructor se guarda dentro del objeto actual.</div></section>
+
+<section class="section" id="fcfs"><h2>7. FCFS — First Come, First Served</h2>
+<p>El primero que llega es el primero que se atiende. Es parecido a una fila.</p>
+<div class="gantt"><span>P1<br>0–4</span><span>P2<br>4–7</span><span>P3<br>7–9</span><span>P4<br>9–10</span></div>
+<div class="tabs"><button class="tab active" data-g="fcfs" data-t="fcfsj">Java</button><button class="tab" data-g="fcfs" data-t="fcfsp">Python</button></div>
+<div id="fcfsj" class="code-panel active"><div class="codebox"><div class="codebar">FCFS.java</div><pre><code class="language-java">public class FCFS {
+    public static void main(String[] args) {
+        Proceso[] procesos = {
+            new Proceso("P1", 0, 4, 1),
+            new Proceso("P2", 1, 3, 1),
+            new Proceso("P3", 2, 2, 1)
+        };
+
+        for (Proceso p : procesos) {
+            System.out.println("Ejecutando " + p.nombre);
+            System.out.println("Duracion: " + p.rafaga);
+        }
+    }
+}</code></pre></div></div>
+<div id="fcfsp" class="code-panel"><div class="codebox"><div class="codebar">fcfs.py</div><pre><code class="language-python">procesos = [
+    Proceso("P1", 0, 4, 1),
+    Proceso("P2", 1, 3, 1),
+    Proceso("P3", 2, 2, 1)
+]
+
+for p in procesos:
+    print("Ejecutando", p.nombre)
+    print("Duracion:", p.rafaga)</code></pre></div></div>
+<div class="exercise"><b>Prueba:</b> agrega P4 con ráfaga 1. ¿En qué posición se ejecutará si llega después de P3?</div></section>
+
+<section class="section" id="sjf"><h2>8. SJF — Shortest Job First</h2>
+<p>Entre los procesos disponibles, se ejecuta primero el que tenga la ráfaga más corta.</p>
+<div class="diagram"><div class="mermaid">flowchart LR
+A[P1 = 8] --> D[Orden]
+B[P2 = 4] --> D
+C[P3 = 1] --> D
+D --> E[P3]
+E --> F[P2]
+F --> G[P1]</div></div>
+<div class="tabs"><button class="tab active" data-g="sjf" data-t="sjfj">Java</button><button class="tab" data-g="sjf" data-t="sjfp">Python</button></div>
+<div id="sjfj" class="code-panel active"><div class="codebox"><div class="codebar">SJF.java</div><pre><code class="language-java">public class SJF {
+    public static void main(String[] args) {
+        Proceso[] p = {
+            new Proceso("P1", 0, 8, 1),
+            new Proceso("P2", 0, 4, 1),
+            new Proceso("P3", 0, 1, 1)
+        };
+
+        for (int i = 0; i < p.length; i++) {
+            for (int j = i + 1; j < p.length; j++) {
+                if (p[j].rafaga < p[i].rafaga) {
+                    Proceso aux = p[i];
+                    p[i] = p[j];
+                    p[j] = aux;
+                }
+            }
+        }
+
+        for (Proceso proceso : p) {
+            System.out.println(proceso.nombre + " -> " + proceso.rafaga);
+        }
+    }
+}</code></pre></div></div>
+<div id="sjfp" class="code-panel"><div class="codebox"><div class="codebar">sjf.py</div><pre><code class="language-python">procesos = [
+    Proceso("P1", 0, 8, 1),
+    Proceso("P2", 0, 4, 1),
+    Proceso("P3", 0, 1, 1)
+]
+
+for i in range(len(procesos)):
+    for j in range(i + 1, len(procesos)):
+        if procesos[j].rafaga < procesos[i].rafaga:
+            auxiliar = procesos[i]
+            procesos[i] = procesos[j]
+            procesos[j] = auxiliar
+
+for p in procesos:
+    print(p.nombre, "->", p.rafaga)</code></pre></div></div>
+<div class="warn">Este ejemplo es SJF no apropiativo y simplificado: suponemos que los procesos ya están disponibles.</div></section>
+
+<section class="section" id="prioridad"><h2>9. Planificación por prioridad</h2>
+<p>Cada proceso tiene una prioridad. Para este taller, <b>1 significa mayor prioridad</b>.</p>
+<div class="tabs"><button class="tab active" data-g="prio" data-t="prioj">Java</button><button class="tab" data-g="prio" data-t="priop">Python</button></div>
+<div id="prioj" class="code-panel active"><div class="codebox"><div class="codebar">Prioridad.java</div><pre><code class="language-java">public class Prioridad {
+    public static void main(String[] args) {
+        Proceso[] p = {
+            new Proceso("P1", 0, 3, 3),
+            new Proceso("P2", 0, 2, 1),
+            new Proceso("P3", 0, 4, 2)
+        };
+
+        for (int i = 0; i < p.length; i++) {
+            for (int j = i + 1; j < p.length; j++) {
+                if (p[j].prioridad < p[i].prioridad) {
+                    Proceso aux = p[i];
+                    p[i] = p[j];
+                    p[j] = aux;
+                }
+            }
+        }
+
+        for (Proceso proceso : p) {
+            System.out.println(proceso.nombre + " prioridad " + proceso.prioridad);
+        }
+    }
+}</code></pre></div></div>
+<div id="priop" class="code-panel"><div class="codebox"><div class="codebar">prioridad.py</div><pre><code class="language-python">procesos = [
+    Proceso("P1", 0, 3, 3),
+    Proceso("P2", 0, 2, 1),
+    Proceso("P3", 0, 4, 2)
+]
+
+for i in range(len(procesos)):
+    for j in range(i + 1, len(procesos)):
+        if procesos[j].prioridad < procesos[i].prioridad:
+            aux = procesos[i]
+            procesos[i] = procesos[j]
+            procesos[j] = aux
+
+for p in procesos:
+    print(p.nombre, "prioridad", p.prioridad)</code></pre></div></div>
+<div class="note">Si un proceso de prioridad baja espera demasiado, <b>aging</b> puede elevar gradualmente su prioridad.</div></section>
+
+<section class="section" id="rr"><h2>10. Round Robin</h2>
+<p>Cada proceso recibe un turno llamado <b>quantum</b>. Si no termina, vuelve al final de la cola.</p>
+<div class="diagram"><div class="mermaid">flowchart LR
+P1[P1] --> P2[P2] --> P3[P3] --> P1</div></div>
+<div class="tabs"><button class="tab active" data-g="rr" data-t="rrj">Java</button><button class="tab" data-g="rr" data-t="rrp">Python</button></div>
+<div id="rrj" class="code-panel active"><div class="codebox"><div class="codebar">RoundRobin.java</div><pre><code class="language-java">public class RoundRobin {
+    public static void main(String[] args) {
+        Proceso[] p = {
+            new Proceso("P1", 0, 5, 1),
+            new Proceso("P2", 0, 4, 1),
+            new Proceso("P3", 0, 3, 1)
+        };
+
+        int quantum = 2;
+        boolean quedan = true;
+
+        while (quedan) {
+            quedan = false;
+
+            for (Proceso proceso : p) {
+                if (proceso.rafaga > 0) {
+                    quedan = true;
+
+                    if (proceso.rafaga <= quantum) {
+                        System.out.println(proceso.nombre + " termina");
+                        proceso.rafaga = 0;
+                    } else {
+                        System.out.println(proceso.nombre + " usa " + quantum);
+                        proceso.rafaga = proceso.rafaga - quantum;
+                    }
+                }
+            }
+        }
+    }
+}</code></pre></div></div>
+<div id="rrp" class="code-panel"><div class="codebox"><div class="codebar">round_robin.py</div><pre><code class="language-python">procesos = [
+    Proceso("P1", 0, 5, 1),
+    Proceso("P2", 0, 4, 1),
+    Proceso("P3", 0, 3, 1)
+]
+
+quantum = 2
+quedan = True
+
+while quedan:
+    quedan = False
+
+    for p in procesos:
+        if p.rafaga > 0:
+            quedan = True
+
+            if p.rafaga <= quantum:
+                print(p.nombre, "termina")
+                p.rafaga = 0
+            else:
+                print(p.nombre, "usa", quantum)
+                p.rafaga = p.rafaga - quantum</code></pre></div></div></section>
+
+<section class="section" id="multinivel"><h2>11. Colas multinivel</h2>
+<p>No todos los procesos tienen que esperar en la misma cola. Podemos separar, por ejemplo, tareas interactivas y tareas de fondo.</p>
+<div class="diagram"><div class="mermaid">flowchart TD
+A[Procesos] --> H[Cola alta]
+A --> M[Cola media]
+A --> B[Cola baja]
+H --> CPU[CPU]
+M --> CPU
+B --> CPU</div></div>
+<div class="tabs"><button class="tab active" data-g="multi" data-t="multij">Java</button><button class="tab" data-g="multi" data-t="multip">Python</button></div>
+<div id="multij" class="code-panel active"><div class="codebox"><div class="codebar">ColasMultinivel.java</div><pre><code class="language-java">public class ColasMultinivel {
+    public static void main(String[] args) {
+        Proceso[] alta = {
+            new Proceso("Editor", 0, 2, 1),
+            new Proceso("Navegador", 0, 3, 1)
+        };
+
+        Proceso[] baja = {
+            new Proceso("Copia", 0, 5, 3),
+            new Proceso("Actualizacion", 0, 4, 3)
+        };
+
+        System.out.println("COLA ALTA");
+        for (Proceso p : alta) {
+            System.out.println("Ejecutando " + p.nombre);
+        }
+
+        System.out.println("COLA BAJA");
+        for (Proceso p : baja) {
+            System.out.println("Ejecutando " + p.nombre);
+        }
+    }
+}</code></pre></div></div>
+<div id="multip" class="code-panel"><div class="codebox"><div class="codebar">colas_multinivel.py</div><pre><code class="language-python">alta = [
+    Proceso("Editor", 0, 2, 1),
+    Proceso("Navegador", 0, 3, 1)
+]
+
+baja = [
+    Proceso("Copia", 0, 5, 3),
+    Proceso("Actualizacion", 0, 4, 3)
+]
+
+print("COLA ALTA")
+for p in alta:
+    print("Ejecutando", p.nombre)
+
+print("COLA BAJA")
+for p in baja:
+    print("Ejecutando", p.nombre)</code></pre></div></div></section>
+
+<section class="section" id="mlfq"><h2>12. MLFQ básico</h2>
+<p>En las colas multinivel con realimentación, un proceso puede cambiar de cola según su comportamiento.</p>
+<div class="diagram"><div class="mermaid">flowchart TD
+A[Cola alta] -->|usa todo el quantum| B[Cola media]
+B -->|usa todo el quantum| C[Cola baja]
+C -->|espera demasiado / aging| B
+B -->|espera demasiado| A</div></div>
+<div class="note">Para mantener el código apto para principiantes, aquí nos concentramos en la idea: procesos que consumen mucho CPU pueden bajar de cola; procesos que esperan demasiado pueden subir.</div></section>
+
+<section class="section" id="comparar"><h2>13. Comparación</h2>
+<div class="table"><table><thead><tr><th>Algoritmo</th><th>Idea</th><th>Detalle importante</th></tr></thead><tbody>
+<tr><td>FCFS</td><td>Orden de llegada</td><td>Muy simple, pero un proceso largo puede retrasar a los demás.</td></tr>
+<tr><td>SJF</td><td>Ráfaga más corta</td><td>Reduce espera en ciertos escenarios, pero puede perjudicar trabajos largos.</td></tr>
+<tr><td>Prioridad</td><td>Mayor prioridad primero</td><td>Puede producir inanición; aging ayuda.</td></tr>
+<tr><td>Round Robin</td><td>Turnos con quantum</td><td>Todos avanzan por turnos.</td></tr>
+<tr><td>Multinivel</td><td>Varias colas</td><td>Separa tipos de procesos.</td></tr>
+<tr><td>MLFQ</td><td>Colas dinámicas</td><td>Los procesos pueden subir o bajar.</td></tr>
+</tbody></table></div></section>
+
+<section class="section" id="taller"><h2>14. Taller práctico</h2>
+<div class="exercise"><b>1.</b> Explica con tus palabras programa, proceso, PID y PCB.</div>
+<div class="exercise"><b>2.</b> Dibuja: Nuevo → Listo → Ejecutando → Bloqueado → Listo → Ejecutando → Terminado.</div>
+<div class="exercise"><b>3.</b> FCFS: P1=6, P2=2, P3=4. Dibuja el Gantt.</div>
+<div class="exercise"><b>4.</b> SJF: usa los mismos procesos y cambia el orden.</div>
+<div class="exercise"><b>5.</b> Prioridad: P1=3, P2=1, P3=2. ¿Quién pasa primero?</div>
+<div class="exercise"><b>6.</b> Round Robin: P1=5, P2=3, P3=6, quantum=2. Escribe cada turno.</div>
+<div class="exercise"><b>7.</b> Agrega P4 a los códigos de Java y Python.</div>
+<div class="exercise"><b>8.</b> Compara FCFS, SJF y Round Robin con los mismos procesos.</div></section>
+
+<section class="section" id="quiz"><h2>15. Repaso final</h2>
+<div class="quiz" data-a="b"><b>¿Qué identifica de forma única a un proceso?</b><label><input type="radio" name="q1" value="a"> Quantum</label><label><input type="radio" name="q1" value="b"> PID</label><label><input type="radio" name="q1" value="c"> Ráfaga</label></div>
+<div class="quiz" data-a="c"><b>¿Qué algoritmo usa quantum?</b><label><input type="radio" name="q2" value="a"> FCFS</label><label><input type="radio" name="q2" value="b"> SJF</label><label><input type="radio" name="q2" value="c"> Round Robin</label></div>
+<div class="quiz" data-a="a"><b>¿Qué ayuda a evitar inanición?</b><label><input type="radio" name="q3" value="a"> Aging</label><label><input type="radio" name="q3" value="b"> PID</label><label><input type="radio" name="q3" value="c"> PCB</label></div>
+<button class="btn" onclick="calificar()">Calificar</button><b id="resultado"></b>
+</section>
+<div class="footer">Taller de Procesos y Planificación · Java + Python · Nivel inicial</div>
+</div>
+</main>
+</div>
+<script>
+mermaid.initialize({startOnLoad:true,theme:"default",securityLevel:"loose"});
+hljs.highlightAll();
+function tema(){const r=document.documentElement;r.dataset.theme=r.dataset.theme==="light"?"dark":"light";localStorage.setItem("tema-procesos",r.dataset.theme)}
+const guardado=localStorage.getItem("tema-procesos");if(guardado)document.documentElement.dataset.theme=guardado;
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{const g=b.dataset.g;document.querySelectorAll('.tab[data-g="'+g+'"]').forEach(x=>x.classList.remove("active"));b.classList.add("active");const ids={obj:["objj","objp"],fcfs:["fcfsj","fcfsp"],sjf:["sjfj","sjfp"],prio:["prioj","priop"],rr:["rrj","rrp"],multi:["multij","multip"]};ids[g].forEach(id=>document.getElementById(id).classList.remove("active"));document.getElementById(b.dataset.t).classList.add("active")});
+function calificar(){let n=0;document.querySelectorAll(".quiz").forEach(q=>{const x=q.querySelector("input:checked");if(x&&x.value===q.dataset.a)n++});document.getElementById("resultado").textContent=" Resultado: "+n+" / 3";}
+const sec=[...document.querySelectorAll(".section")], links=[...document.querySelectorAll(".nav a")];
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-25% 0px -65% 0px"});sec.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
