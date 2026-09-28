@@ -338,6 +338,98 @@ pre code{
   opacity:1!important;
 }
 
+
+/* ===== Colores del diagrama tambien en pantalla completa ===== */
+.diagram-modal-content .edgePath path{
+  stroke:#7c3aed!important;
+  stroke-width:2.2px!important;
+}
+.diagram-modal-content marker path{
+  fill:#7c3aed!important;
+  stroke:#7c3aed!important;
+}
+.diagram-modal-content .node rect,
+.diagram-modal-content .node polygon,
+.diagram-modal-content .node path{
+  stroke-width:1.7px!important;
+  filter:drop-shadow(0 10px 12px rgba(51,65,85,.10));
+}
+.diagram-modal-content .node .label,
+.diagram-modal-content .nodeLabel{
+  font-weight:750!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+1) rect,
+.diagram-modal-content .node:nth-of-type(6n+1) polygon,
+.diagram-modal-content .node:nth-of-type(6n+1) path{
+  fill:#7c3aed!important;
+  stroke:#6d28d9!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+1) .label,
+.diagram-modal-content .node:nth-of-type(6n+1) .nodeLabel{
+  fill:#fff!important;color:#fff!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+2) rect,
+.diagram-modal-content .node:nth-of-type(6n+2) polygon,
+.diagram-modal-content .node:nth-of-type(6n+2) path{
+  fill:#0891b2!important;
+  stroke:#0e7490!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+2) .label,
+.diagram-modal-content .node:nth-of-type(6n+2) .nodeLabel{
+  fill:#fff!important;color:#fff!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+3) rect,
+.diagram-modal-content .node:nth-of-type(6n+3) polygon,
+.diagram-modal-content .node:nth-of-type(6n+3) path{
+  fill:#2563eb!important;
+  stroke:#1d4ed8!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+3) .label,
+.diagram-modal-content .node:nth-of-type(6n+3) .nodeLabel{
+  fill:#fff!important;color:#fff!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+4) rect,
+.diagram-modal-content .node:nth-of-type(6n+4) polygon,
+.diagram-modal-content .node:nth-of-type(6n+4) path{
+  fill:#ec4899!important;
+  stroke:#db2777!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+4) .label,
+.diagram-modal-content .node:nth-of-type(6n+4) .nodeLabel{
+  fill:#fff!important;color:#fff!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+5) rect,
+.diagram-modal-content .node:nth-of-type(6n+5) polygon,
+.diagram-modal-content .node:nth-of-type(6n+5) path{
+  fill:#fff7ed!important;
+  stroke:#fb923c!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+5) .label,
+.diagram-modal-content .node:nth-of-type(6n+5) .nodeLabel{
+  fill:#9a3412!important;color:#9a3412!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+6) rect,
+.diagram-modal-content .node:nth-of-type(6n+6) polygon,
+.diagram-modal-content .node:nth-of-type(6n+6) path{
+  fill:#ecfeff!important;
+  stroke:#22d3ee!important;
+}
+.diagram-modal-content .node:nth-of-type(6n+6) .label,
+.diagram-modal-content .node:nth-of-type(6n+6) .nodeLabel{
+  fill:#155e75!important;color:#155e75!important;
+}
+.diagram-modal-content .edgeLabel text,
+.diagram-modal-content .edgeLabel tspan{
+  fill:#111827!important;
+  font-weight:800!important;
+}
+.diagram-modal-content .edgeLabel rect,
+.diagram-modal-content .labelBkg{
+  fill:#fff7ed!important;
+  stroke:#fb923c!important;
+  opacity:1!important;
+}
+
 </style>
 </head>
 <body>
@@ -429,108 +521,185 @@ CPU -->|sale temporalmente| Q</div></div>
 <p>Todos los algoritmos reutilizan un objeto sencillo. Esto hace que el estudiante se concentre en la lógica.</p>
 <div class="tabs"><button class="tab active" data-g="obj" data-t="objj">Java</button><button class="tab" data-g="obj" data-t="objp">Python</button></div>
 <div id="objj" class="code-panel active"><div class="codebox"><div class="codebar">Proceso.java</div><pre><code class="language-java">public class Proceso {
+
+    // Guarda el nombre de la tarea
     String nombre;
+
+    // Guarda el momento en que llega la tarea
     int llegada;
+
+    // Guarda cuanto tiempo necesita la tarea
     int rafaga;
+
+    // Guarda la prioridad de la tarea
     int prioridad;
+
+    // Guarda cuanto tiempo le falta por terminar
     int restante;
 
     public Proceso(String nombre, int llegada, int rafaga, int prioridad) {
+
+        // Guardamos el nombre que recibimos
         this.nombre = nombre;
+
+        // Guardamos el tiempo de llegada
         this.llegada = llegada;
+
+        // Guardamos la duracion total
         this.rafaga = rafaga;
+
+        // Guardamos la prioridad
         this.prioridad = prioridad;
+
+        // Al inicio falta toda la rafaga por ejecutar
         this.restante = rafaga;
     }
 }</code></pre></div></div>
 <div id="objp" class="code-panel"><div class="codebox"><div class="codebar">proceso.py</div><pre><code class="language-python">class Proceso:
+
     def __init__(self, nombre, llegada, rafaga, prioridad):
+
+        # Guardamos el nombre de la tarea
         self.nombre = nombre
+
+        # Guardamos el momento de llegada
         self.llegada = llegada
+
+        # Guardamos cuanto tiempo necesita
         self.rafaga = rafaga
+
+        # Guardamos la prioridad
         self.prioridad = prioridad
+
+        # Al inicio falta toda la rafaga
         self.restante = rafaga</code></pre></div></div>
 <div class="note"><b>Qué significa <code>this.nombre = nombre</code>:</b> el dato recibido por el constructor se guarda dentro del objeto actual.</div></section>
 
 <section class="section" id="fcfs"><h2>7. FCFS — First Come, First Served</h2>
 <p>El primero que llega es el primero que se atiende. Es parecido a una fila.</p>
 <div class="card"><strong>Situacion de la vida real: una fila en una panaderia</strong>Ana llega primero, luego Luis y despues Sara. Se atiende a Ana, luego a Luis y al final a Sara. Eso es FCFS / FIFO.</div>
-<div class="gantt"><span>P1<br>0–4</span><span>P2<br>4–7</span><span>P3<br>7–9</span><span>P4<br>9–10</span></div>
+<div class="gantt"><span>Ana<br>0-4</span><span>Luis<br>4-7</span><span>Sara<br>7-9</span><span>Pedro<br>9-10</span></div>
 <div class="tabs"><button class="tab active" data-g="fcfs" data-t="fcfsj">Java</button><button class="tab" data-g="fcfs" data-t="fcfsp">Python</button></div>
 <div id="fcfsj" class="code-panel active"><div class="codebox"><div class="codebar">FCFS.java</div><pre><code class="language-java">public class FCFS {
+
     public static void main(String[] args) {
-        Proceso[] procesos = {
-            new Proceso("P1", 0, 4, 1),
-            new Proceso("P2", 1, 3, 1),
-            new Proceso("P3", 2, 2, 1)
+
+        // Cada objeto representa una persona en una fila
+        Proceso[] lista = {
+            new Proceso("Ana", 0, 4, 1),
+            new Proceso("Luis", 1, 3, 1),
+            new Proceso("Sara", 2, 2, 1)
         };
 
-        for (Proceso p : procesos) {
-            System.out.println("Ejecutando " + p.nombre);
-            System.out.println("Duracion: " + p.rafaga);
+        // Recorremos la fila desde la primera posicion
+        for (int i = 0; i &lt; lista.length; i++) {
+
+            // Tomamos la persona de la posicion i
+            Proceso persona = lista[i];
+
+            // Mostramos quien esta siendo atendido
+            System.out.println("Atendiendo a: " + persona.nombre);
+
+            // Mostramos cuanto tarda su turno
+            System.out.println("Tiempo: " + persona.rafaga);
         }
     }
 }</code></pre></div></div>
-<div id="fcfsp" class="code-panel"><div class="codebox"><div class="codebar">fcfs.py</div><pre><code class="language-python">procesos = [
-    Proceso("P1", 0, 4, 1),
-    Proceso("P2", 1, 3, 1),
-    Proceso("P3", 2, 2, 1)
+<div id="fcfsp" class="code-panel"><div class="codebox"><div class="codebar">fcfs.py</div><pre><code class="language-python"># Cada objeto representa una persona en una fila
+lista = [
+    Proceso("Ana", 0, 4, 1),
+    Proceso("Luis", 1, 3, 1),
+    Proceso("Sara", 2, 2, 1)
 ]
 
-for p in procesos:
-    print("Ejecutando", p.nombre)
-    print("Duracion:", p.rafaga)</code></pre></div></div>
+# Recorremos la fila desde la primera posicion
+for i in range(len(lista)):
+
+    # Tomamos la persona de la posicion i
+    persona = lista[i]
+
+    # Mostramos quien esta siendo atendido
+    print("Atendiendo a:", persona.nombre)
+
+    # Mostramos cuanto tarda su turno
+    print("Tiempo:", persona.rafaga)</code></pre></div></div>
 <div class="exercise"><b>Prueba:</b> agrega P4 con ráfaga 1. ¿En qué posición se ejecutará si llega después de P3?</div></section>
 
 <section class="section" id="sjf"><h2>8. SJF — Shortest Job First</h2>
 <p>Entre los procesos disponibles, se ejecuta primero el que tenga la rafaga mas corta.</p>
 <div class="card"><strong>Situacion de la vida real: tareas de la casa</strong>Tienes que guardar un cuaderno, lavar un plato y ordenar toda la habitacion. Primero haces la tarea mas corta. Esa es la idea de SJF.</div>
 <div class="diagram"><div class="mermaid">flowchart LR
-A[P1 = 8] --> D[Orden]
-B[P2 = 4] --> D
-C[P3 = 1] --> D
-D --> E[P3]
-E --> F[P2]
-F --> G[P1]</div></div>
+A["Ordenar habitacion = 8"] --> D["Comparar tiempos"]
+B["Lavar plato = 4"] --> D
+C["Guardar cuaderno = 1"] --> D
+D --> E["Guardar cuaderno"]
+E --> F["Lavar plato"]
+F --> G["Ordenar habitacion"]</div></div>
 <div class="tabs"><button class="tab active" data-g="sjf" data-t="sjfj">Java</button><button class="tab" data-g="sjf" data-t="sjfp">Python</button></div>
 <div id="sjfj" class="code-panel active"><div class="codebox"><div class="codebar">SJF.java</div><pre><code class="language-java">public class SJF {
+
     public static void main(String[] args) {
-        Proceso[] p = {
-            new Proceso("P1", 0, 8, 1),
-            new Proceso("P2", 0, 4, 1),
-            new Proceso("P3", 0, 1, 1)
+
+        // Creamos tres tareas de la casa
+        Proceso[] lista = {
+            new Proceso("Ordenar habitacion", 0, 8, 1),
+            new Proceso("Lavar plato", 0, 4, 1),
+            new Proceso("Guardar cuaderno", 0, 1, 1)
         };
 
-        for (int i = 0; i < p.length; i++) {
-            for (int j = i + 1; j < p.length; j++) {
-                if (p[j].rafaga < p[i].rafaga) {
-                    Proceso aux = p[i];
-                    p[i] = p[j];
-                    p[j] = aux;
+        // Recorremos la lista desde la primera posicion
+        for (int i = 0; i &lt; lista.length; i++) {
+
+            // Comparamos con las posiciones que estan despues
+            for (int j = i + 1; j &lt; lista.length; j++) {
+
+                // Si la tarea j dura menos que la tarea i
+                if (lista[j].rafaga &lt; lista[i].rafaga) {
+
+                    // Guardamos temporalmente la tarea i
+                    Proceso auxiliar = lista[i];
+
+                    // Ponemos la tarea corta en la posicion i
+                    lista[i] = lista[j];
+
+                    // Ponemos la otra tarea en la posicion j
+                    lista[j] = auxiliar;
                 }
             }
         }
 
-        for (Proceso proceso : p) {
-            System.out.println(proceso.nombre + " -> " + proceso.rafaga);
+        // Mostramos el orden final
+        for (int i = 0; i &lt; lista.length; i++) {
+            System.out.println(lista[i].nombre);
         }
     }
 }</code></pre></div></div>
-<div id="sjfp" class="code-panel"><div class="codebox"><div class="codebar">sjf.py</div><pre><code class="language-python">procesos = [
-    Proceso("P1", 0, 8, 1),
-    Proceso("P2", 0, 4, 1),
-    Proceso("P3", 0, 1, 1)
+<div id="sjfp" class="code-panel"><div class="codebox"><div class="codebar">sjf.py</div><pre><code class="language-python"># Creamos tres tareas de la casa
+lista = [
+    Proceso("Ordenar habitacion", 0, 8, 1),
+    Proceso("Lavar plato", 0, 4, 1),
+    Proceso("Guardar cuaderno", 0, 1, 1)
 ]
 
-for i in range(len(procesos)):
-    for j in range(i + 1, len(procesos)):
-        if procesos[j].rafaga < procesos[i].rafaga:
-            auxiliar = procesos[i]
-            procesos[i] = procesos[j]
-            procesos[j] = auxiliar
+# Recorremos la lista desde la primera posicion
+for i in range(len(lista)):
 
-for p in procesos:
-    print(p.nombre, "->", p.rafaga)</code></pre></div></div>
+    # Comparamos con las posiciones que estan despues
+    for j in range(i + 1, len(lista)):
+
+        # Si la tarea j dura menos que la tarea i
+        if lista[j].rafaga &lt; lista[i].rafaga:
+
+            # Guardamos temporalmente la tarea i
+            auxiliar = lista[i]
+
+            # Intercambiamos las dos tareas
+            lista[i] = lista[j]
+            lista[j] = auxiliar
+
+# Mostramos el orden final
+for i in range(len(lista)):
+    print(lista[i].nombre)</code></pre></div></div>
 <div class="warn">Este ejemplo es SJF no apropiativo y simplificado: suponemos que los procesos ya están disponibles.</div></section>
 
 
@@ -541,12 +710,12 @@ for p in procesos:
 <div class="card"><strong>Situacion de la vida real: trabajos en una mesa</strong>A las 8:00 llega una tarea de 6 minutos. A las 8:02 llega una de 2 minutos. Cuando la primera termina, miras las tareas que ya llegaron y haces primero la mas corta.</div>
 
 <div class="diagram"><div class="mermaid">flowchart LR
-A["Llega P1 - 6 min"] --> B["P1 empieza"]
-B --> C["Mientras trabaja llega P2 - 2 min"]
-C --> D["P1 termina"]
-D --> E{"Que procesos esperan"}
-E --> F["P2 es el mas corto"]
-F --> G["Ejecuta P2"]</div></div>
+A["Llega tarea larga - 6 min"] --> B["Empieza tarea larga"]
+B --> C["Llega tarea corta - 2 min"]
+C --> D["Termina tarea larga"]
+D --> E{"Que tareas esperan"}
+E --> F["Tarea corta es la menor"]
+F --> G["Ejecuta tarea corta"]</div></div>
 
 <div class="goal"><b>Idea clave:</b> SJFT mira el tiempo de llegada, pero en este ejemplo <b>no interrumpe</b> al proceso que ya esta ejecutando.</div>
 
@@ -644,13 +813,13 @@ while terminados &lt; len(lista):
 <div class="card"><strong>Situacion de la vida real: una tarea larga y una llamada corta</strong>Estas haciendo una tarea de 10 minutos. Llega una llamada que toma 1 minuto. Pausas la tarea, atiendes la llamada y luego vuelves a lo anterior. Esa es la idea de SRTF.</div>
 
 <div class="diagram"><div class="mermaid">flowchart LR
-A["P1 empieza - faltan 7"] --> B["Llega P2 - faltan 4"]
+A["Empieza tarea larga - faltan 7"] --> B["Llega llamada corta - faltan 4"]
 B --> C{"Cual tiene menos tiempo"}
-C --> D["P2 toma la CPU"]
-D --> E["Llega P3 - falta 1"]
-E --> F["P3 toma la CPU"]
-F --> G["P3 termina"]
-G --> H["Se compara P1 y P2"]</div></div>
+C --> D["Llamada corta toma la CPU"]
+D --> E["Llega mensaje rapido - falta 1"]
+E --> F["Mensaje rapido toma la CPU"]
+F --> G["Mensaje rapido termina"]
+G --> H["Se comparan las tareas que quedan"]</div></div>
 
 <div class="goal"><b>Idea clave:</b> SRTF es apropiativo. Puede quitarle la CPU a un proceso si llega otro con menor tiempo restante.</div>
 
@@ -749,103 +918,165 @@ while terminados &lt; len(lista):
 <div class="card"><strong>Situacion de la vida real: una clinica</strong>Una emergencia se atiende antes que un control normal. La tarea mas importante pasa primero. Esa es la idea de prioridad.</div>
 <div class="tabs"><button class="tab active" data-g="prio" data-t="prioj">Java</button><button class="tab" data-g="prio" data-t="priop">Python</button></div>
 <div id="prioj" class="code-panel active"><div class="codebox"><div class="codebar">Prioridad.java</div><pre><code class="language-java">public class Prioridad {
+
     public static void main(String[] args) {
-        Proceso[] p = {
-            new Proceso("P1", 0, 3, 3),
-            new Proceso("P2", 0, 2, 1),
-            new Proceso("P3", 0, 4, 2)
+
+        // Creamos tres personas que esperan atencion
+        Proceso[] lista = {
+            new Proceso("Control normal", 0, 3, 3),
+            new Proceso("Emergencia", 0, 2, 1),
+            new Proceso("Consulta rapida", 0, 4, 2)
         };
 
-        for (int i = 0; i < p.length; i++) {
-            for (int j = i + 1; j < p.length; j++) {
-                if (p[j].prioridad < p[i].prioridad) {
-                    Proceso aux = p[i];
-                    p[i] = p[j];
-                    p[j] = aux;
+        // Recorremos la lista para ordenar por prioridad
+        for (int i = 0; i &lt; lista.length; i++) {
+
+            for (int j = i + 1; j &lt; lista.length; j++) {
+
+                // El numero menor representa mayor prioridad
+                if (lista[j].prioridad &lt; lista[i].prioridad) {
+
+                    // Guardamos un elemento temporal
+                    Proceso auxiliar = lista[i];
+
+                    // Intercambiamos las posiciones
+                    lista[i] = lista[j];
+                    lista[j] = auxiliar;
                 }
             }
         }
 
-        for (Proceso proceso : p) {
-            System.out.println(proceso.nombre + " prioridad " + proceso.prioridad);
+        // Mostramos el orden de atencion
+        for (int i = 0; i &lt; lista.length; i++) {
+            System.out.println(lista[i].nombre);
         }
     }
 }</code></pre></div></div>
-<div id="priop" class="code-panel"><div class="codebox"><div class="codebar">prioridad.py</div><pre><code class="language-python">procesos = [
-    Proceso("P1", 0, 3, 3),
-    Proceso("P2", 0, 2, 1),
-    Proceso("P3", 0, 4, 2)
+<div id="priop" class="code-panel"><div class="codebox"><div class="codebar">prioridad.py</div><pre><code class="language-python"># Creamos tres personas que esperan atencion
+lista = [
+    Proceso("Control normal", 0, 3, 3),
+    Proceso("Emergencia", 0, 2, 1),
+    Proceso("Consulta rapida", 0, 4, 2)
 ]
 
-for i in range(len(procesos)):
-    for j in range(i + 1, len(procesos)):
-        if procesos[j].prioridad < procesos[i].prioridad:
-            aux = procesos[i]
-            procesos[i] = procesos[j]
-            procesos[j] = aux
+# Recorremos la lista para ordenar por prioridad
+for i in range(len(lista)):
 
-for p in procesos:
-    print(p.nombre, "prioridad", p.prioridad)</code></pre></div></div>
+    for j in range(i + 1, len(lista)):
+
+        # El numero menor representa mayor prioridad
+        if lista[j].prioridad &lt; lista[i].prioridad:
+
+            # Guardamos un elemento temporal
+            auxiliar = lista[i]
+
+            # Intercambiamos las posiciones
+            lista[i] = lista[j]
+            lista[j] = auxiliar
+
+# Mostramos el orden de atencion
+for i in range(len(lista)):
+    print(lista[i].nombre)</code></pre></div></div>
 <div class="note">Si un proceso de prioridad baja espera demasiado, <b>aging</b> puede elevar gradualmente su prioridad.</div></section>
 
 <section class="section" id="rr"><h2>12. Round Robin</h2>
 <p>Cada proceso recibe un turno llamado <b>quantum</b>. Si no termina, vuelve al final de la cola.</p>
 <div class="card"><strong>Situacion de la vida real: turnos en un columpio</strong>Tres ninos usan un solo columpio. Cada uno tiene 2 minutos. Cuando termina su turno, pasa el siguiente. Si quiere seguir, vuelve al final de la fila.</div>
 <div class="diagram"><div class="mermaid">flowchart LR
-P1[P1] --> P2[P2] --> P3[P3] --> P1</div></div>
+A["Ana"] --> L["Luis"] --> S["Sara"] --> A</div></div>
 <div class="tabs"><button class="tab active" data-g="rr" data-t="rrj">Java</button><button class="tab" data-g="rr" data-t="rrp">Python</button></div>
 <div id="rrj" class="code-panel active"><div class="codebox"><div class="codebar">RoundRobin.java</div><pre><code class="language-java">public class RoundRobin {
+
     public static void main(String[] args) {
-        Proceso[] p = {
-            new Proceso("P1", 0, 5, 1),
-            new Proceso("P2", 0, 4, 1),
-            new Proceso("P3", 0, 3, 1)
+
+        // Cada persona quiere usar el columpio
+        Proceso[] lista = {
+            new Proceso("Ana", 0, 5, 1),
+            new Proceso("Luis", 0, 4, 1),
+            new Proceso("Sara", 0, 3, 1)
         };
 
+        // Cada turno dura dos minutos
         int quantum = 2;
+
+        // Esta variable indica si alguien aun necesita turno
         boolean quedan = true;
 
         while (quedan) {
+
+            // Al iniciar una vuelta asumimos que nadie queda
             quedan = false;
 
-            for (Proceso proceso : p) {
-                if (proceso.rafaga > 0) {
+            // Recorremos la fila persona por persona
+            for (int i = 0; i &lt; lista.length; i++) {
+
+                Proceso persona = lista[i];
+
+                // Si aun le falta tiempo
+                if (persona.restante &gt; 0) {
+
                     quedan = true;
 
-                    if (proceso.rafaga <= quantum) {
-                        System.out.println(proceso.nombre + " termina");
-                        proceso.rafaga = 0;
+                    // Si puede terminar en este turno
+                    if (persona.restante &lt;= quantum) {
+
+                        System.out.println(persona.nombre + " termina");
+
+                        // Ya no le queda tiempo
+                        persona.restante = 0;
+
                     } else {
-                        System.out.println(proceso.nombre + " usa " + quantum);
-                        proceso.rafaga = proceso.rafaga - quantum;
+
+                        System.out.println(persona.nombre + " usa " + quantum);
+
+                        // Restamos el tiempo usado
+                        persona.restante = persona.restante - quantum;
                     }
                 }
             }
         }
     }
 }</code></pre></div></div>
-<div id="rrp" class="code-panel"><div class="codebox"><div class="codebar">round_robin.py</div><pre><code class="language-python">procesos = [
-    Proceso("P1", 0, 5, 1),
-    Proceso("P2", 0, 4, 1),
-    Proceso("P3", 0, 3, 1)
+<div id="rrp" class="code-panel"><div class="codebox"><div class="codebar">round_robin.py</div><pre><code class="language-python"># Cada persona quiere usar el columpio
+lista = [
+    Proceso("Ana", 0, 5, 1),
+    Proceso("Luis", 0, 4, 1),
+    Proceso("Sara", 0, 3, 1)
 ]
 
+# Cada turno dura dos minutos
 quantum = 2
+
+# Indica si alguien aun necesita turno
 quedan = True
 
 while quedan:
+
+    # Al iniciar una vuelta asumimos que nadie queda
     quedan = False
 
-    for p in procesos:
-        if p.rafaga > 0:
+    # Recorremos la fila persona por persona
+    for i in range(len(lista)):
+
+        persona = lista[i]
+
+        # Si aun le falta tiempo
+        if persona.restante &gt; 0:
+
             quedan = True
 
-            if p.rafaga <= quantum:
-                print(p.nombre, "termina")
-                p.rafaga = 0
+            # Si puede terminar en este turno
+            if persona.restante &lt;= quantum:
+
+                print(persona.nombre, "termina")
+                persona.restante = 0
+
             else:
-                print(p.nombre, "usa", quantum)
-                p.rafaga = p.rafaga - quantum</code></pre></div></div></section>
+
+                print(persona.nombre, "usa", quantum)
+
+                # Restamos el tiempo usado
+                persona.restante -= quantum</code></pre></div></div></section>
 
 
 <section class="section" id="multinivel"><h2>13. Colas multinivel</h2>
@@ -1276,6 +1507,26 @@ function aplicarTransformModal(){
     "translate("+modalOffsetX+"px,"+modalOffsetY+"px) scale("+modalScale+")";
 }
 
+function copiarEstilosSvgAlModal(origenSvg, destinoSvg){
+  try{
+    const origenNodos=origenSvg.querySelectorAll("*");
+    const destinoNodos=destinoSvg.querySelectorAll("*");
+
+    for(let i=0;i&lt;origenNodos.length &amp;&amp; i&lt;destinoNodos.length;i++){
+      const estilo=getComputedStyle(origenNodos[i]);
+
+      destinoNodos[i].style.fill=estilo.fill;
+      destinoNodos[i].style.stroke=estilo.stroke;
+      destinoNodos[i].style.color=estilo.color;
+      destinoNodos[i].style.fontSize=estilo.fontSize;
+      destinoNodos[i].style.fontWeight=estilo.fontWeight;
+      destinoNodos[i].style.opacity=estilo.opacity;
+    }
+  }catch(e){
+    console.warn("No se pudieron copiar estilos al modal",e);
+  }
+}
+
 function abrirModalDiagrama(titulo,svg){
   crearModalDiagrama();
 
@@ -1298,6 +1549,16 @@ function abrirModalDiagrama(titulo,svg){
   modal.classList.add("show");
 
   const target=stage.querySelector(".diagram-modal-content");
+
+  // Copiamos los colores reales del diagrama original al clon
+  const origenActivo=[...document.querySelectorAll(".diagram .mermaid svg")]
+    .find(item=>item.outerHTML===svg || item.innerHTML===svg);
+
+  const destinoSvg=target.querySelector("svg");
+
+  if(origenActivo &amp;&amp; destinoSvg){
+    copiarEstilosSvgAlModal(origenActivo,destinoSvg);
+  }
 
   document.getElementById("modalZoom").onclick=()=>{
     modalScale=Math.min(3,modalScale+0.25);
