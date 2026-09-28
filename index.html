@@ -942,48 +942,74 @@ setTimeout(() => {
 
 <div class="tabs"><button class="tab active" data-g="srtf" data-t="srtfj">Java</button><button class="tab" data-g="srtf" data-t="srtfp">Python</button></div>
 
-<div id="srtfj" class="code-panel active"><div class="codebox"><div class="codebar">SRTF.java</div><pre><code class="language-java">public class SRTF {
+<div id="srtfj" class="code-panel active"><div class="codebox"><div class="codebar">SRTF.java</div><pre><code class="language-java">import java.util.ArrayList;
+
+public class SRTF {
 
     public static void main(String[] args) {
 
-        // Creamos las tareas con su tiempo de llegada
-        Proceso[] lista = {
-            new Proceso("Tarea larga", 0, 7, 1),
-            new Proceso("Llamada corta", 2, 4, 1),
-            new Proceso("Mensaje rapido", 4, 1, 1)
-        };
+        // Creamos una lista donde pueden llegar nuevos procesos
+        ArrayList&lt;Proceso&gt; lista = new ArrayList&lt;Proceso&gt;();
 
+        // Al inicio solo hay una tarea
+        Proceso tareaLarga = new Proceso("Tarea larga", 0, 7, 1);
+
+        // Agregamos la tarea inicial a la lista
+        lista.add(tareaLarga);
+
+        // Guardamos el tiempo de la simulacion
         int tiempo = 0;
+
+        // Guardamos cuantos procesos terminaron
         int terminados = 0;
 
-        while (terminados &lt; lista.length) {
+        // Nos ayuda a agregar el nuevo proceso solo una vez
+        boolean nuevoProcesoLlego = false;
 
-            // Aqui guardamos la tarea con menor tiempo restante
+        while (terminados &lt; lista.size() || nuevoProcesoLlego == false) {
+
+            // Simulamos que en el tiempo 2 llega otro proceso
+            if (tiempo == 2 &amp;&amp; nuevoProcesoLlego == false) {
+
+                // Creamos el nuevo proceso cuando realmente llega
+                Proceso llamadaCorta =
+                    new Proceso("Llamada corta", tiempo, 2, 1);
+
+                // Lo agregamos a la lista de procesos
+                lista.add(llamadaCorta);
+
+                // Marcamos que ya llego para no agregarlo otra vez
+                nuevoProcesoLlego = true;
+
+                System.out.println(
+                    "Llego un nuevo proceso: " + llamadaCorta.nombre
+                );
+            }
+
+            // Aqui guardamos el proceso con menor tiempo restante
             Proceso mejor = null;
 
             // Recorremos la lista posicion por posicion
-            for (int i = 0; i &lt; lista.length; i++) {
+            for (int i = 0; i &lt; lista.size(); i++) {
 
-                Proceso proceso = lista[i];
+                // Tomamos el proceso de la posicion i
+                Proceso proceso = lista.get(i);
 
-                // Solo miramos las tareas que ya llegaron
-                if (proceso.llegada &lt;= tiempo &amp;&amp; proceso.restante &gt; 0) {
+                // Solo miramos procesos que todavia no terminaron
+                if (proceso.restante &gt; 0) {
 
-                    // Si no tenemos una tarea o esta tarda menos, la escogemos
+                    // Si es el primero o tiene menos tiempo restante
                     if (mejor == null || proceso.restante &lt; mejor.restante) {
+
+                        // Este proceso pasa a ser el mejor candidato
                         mejor = proceso;
                     }
                 }
             }
 
-            // Si todavia no ha llegado ninguna tarea
-            if (mejor == null) {
+            // Si hay un proceso listo para usar la CPU
+            if (mejor != null) {
 
-                System.out.println("Tiempo " + tiempo + ": CPU esperando");
-
-            } else {
-
-                // Mostramos la tarea que usa la CPU
                 System.out.println(
                     "Tiempo " + tiempo +
                     ": ejecuta " + mejor.nombre +
@@ -993,17 +1019,24 @@ setTimeout(() => {
                 // Ejecutamos solo una unidad de tiempo
                 mejor.restante--;
 
-                // Si ya no le queda tiempo, la tarea termino
+                // Si llego a cero, el proceso termino
                 if (mejor.restante == 0) {
+
                     terminados++;
-                    System.out.println(mejor.nombre + " termino");
+
+                    System.out.println(
+                        mejor.nombre + " termino"
+                    );
                 }
             }
 
-            // Esperamos un segundo para simular una unidad de tiempo
+            // Esperamos un segundo para representar una unidad de tiempo
             try {
+
                 Thread.sleep(1000);
+
             } catch (Exception error) {
+
                 System.out.println("Error en la pausa");
             }
 
