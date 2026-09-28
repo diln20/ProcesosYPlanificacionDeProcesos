@@ -791,7 +791,7 @@ F --> G["Ejecuta tarea corta"]</div></div>
 
         // Creamos procesos con llegada y rafaga
         Proceso[] lista = {
-            new Proceso("Tarea larga", 0, 6, 1),
+            new Proceso("Descargar archivo", 0, 6, 1),
             new Proceso("Tarea corta", 2, 2, 1),
             new Proceso("Tarea media", 3, 4, 1)
         };
@@ -836,7 +836,7 @@ F --> G["Ejecuta tarea corta"]</div></div>
 }</code></pre></div></div>
 
 <div id="sjftp" class="code-panel"><div class="codebox"><div class="codebar">sjft.py</div><pre><code class="language-python">lista = [
-    Proceso("Tarea larga", 0, 6, 1),
+    Proceso("Descargar archivo", 0, 6, 1),
     Proceso("Tarea corta", 2, 2, 1),
     Proceso("Tarea media", 3, 4, 1)
 ]
@@ -875,16 +875,21 @@ while terminados &lt; len(lista):
 <section class="section" id="srtf"><h2>10. SRTF — Shortest Remaining Time First</h2>
 <p><b>SRTF</b> significa que siempre se ejecuta el proceso con <b>menor tiempo restante</b>. A diferencia de SJFT, aqui si puede interrumpirse el proceso actual cuando llega otro mas corto.</p>
 
-<div class="card"><strong>Situacion de la vida real: una tarea larga y una llamada corta</strong>Estas haciendo una tarea de 10 minutos. Llega una llamada que toma 1 minuto. Pausas la tarea, atiendes la llamada y luego vuelves a lo anterior. Esa es la idea de SRTF.</div>
+<div class="card"><strong>Ejemplo sencillo dentro de un sistema operativo</strong>El computador esta ejecutando una tarea larga como <b>Descargar archivo</b>. Dos segundos despues el usuario abre la calculadora. Ese nuevo proceso entra a la <b>cola de listos</b>. SRTF compara lo que le falta a cada proceso y, si la calculadora necesita menos tiempo, la CPU la atiende primero.</div>
+
+<div class="grid2">
+  <div class="card"><strong>Cola de listos</strong>Aqui estan los procesos que ya llegaron y estan esperando CPU.</div>
+  <div class="card"><strong>Planificador SRTF</strong>Revisa la cola y escoge el proceso con menor tiempo restante.</div>
+</div>
+
+<div class="note"><b>Importante:</b> en un sistema operativo real no se usa <code>Thread.sleep()</code> de esta forma para planificar procesos. En este taller lo usamos solamente para <b>simular el paso del tiempo</b> y la llegada de un proceso nuevo. La idea que representa es: llega un proceso, entra a la cola de listos y el planificador vuelve a decidir.</div>
 
 <div class="diagram"><div class="mermaid">flowchart LR
-A["Empieza tarea larga - faltan 7"] --> B["Llega llamada corta - faltan 4"]
-B --> C{"Cual tiene menos tiempo"}
-C --> D["Llamada corta toma la CPU"]
-D --> E["Llega mensaje rapido - falta 1"]
-E --> F["Mensaje rapido toma la CPU"]
-F --> G["Mensaje rapido termina"]
-G --> H["Se comparan las tareas que quedan"]</div></div>
+A["CPU ejecuta Descargar archivo - faltan 7"] --> B["Despues del timeout llega Abrir calculadora - faltan 2"]
+B --> C{"Cual proceso tiene menor tiempo restante"}
+C --> D["Abrir calculadora toma la CPU"]
+D --> E["Abrir calculadora termina"]
+E --> F["Descargar archivo vuelve a la CPU"]</div></div>
 
 <div class="goal"><b>Idea clave:</b> SRTF es apropiativo. Puede quitarle la CPU a un proceso si llega otro con menor tiempo restante.</div>
 
@@ -920,46 +925,64 @@ G --> H["Se comparan las tareas que quedan"]</div></div>
 
 <div class="codebox">
   <div class="codebar">simulacion_srtf.js — llegada con setTimeout</div>
-  <pre><code class="language-javascript">// Primero empieza una tarea larga
-mostrarCpuSRTF("Tarea larga", 7, "long");
+  <pre><code class="language-javascript">// La CPU empieza ejecutando una descarga
+mostrarCpuSRTF("Descargar archivo", 7, "long");
 
-// Esperamos 2 segundos para simular que llega otra tarea
+// Despues de 2 segundos simulamos que el usuario
+// abre otro programa
 setTimeout(() => {
 
-    // Llega una tarea mas corta
+    // El nuevo proceso entra a la cola de listos
     mostrarColaSRTF([
-        { nombre: "Llamada corta", restante: 2, clase: "short" }
+        { nombre: "Abrir calculadora", restante: 2, clase: "short" }
     ]);
 
-    // Como 2 es menor que 5, SRTF cambia de proceso
-    mostrarCpuSRTF("Llamada corta", 2, "short");
+    // SRTF compara y escoge el proceso con menor tiempo restante
+    mostrarCpuSRTF("Abrir calculadora", 2, "short");
 
 }, 2000);</code></pre>
 </div>
 
-<div class="note"><b>Que representa el timeout:</b> la tarea larga ya esta usando la CPU. El proceso nuevo <b>no se agrega por tiempo == 2</b>. Un hilo independiente espera con <code>Thread.sleep(2000)</code> y, cuando termina ese timeout, crea y agrega <code>Llamada corta</code> a la lista. En la siguiente revision, SRTF la acomoda automaticamente segun su tiempo restante.</div>
+<div class="note"><b>Que representa el timeout:</b> <code>Descargar archivo</code> ya esta usando la CPU. Un hilo separado espera 2 segundos con <code>Thread.sleep(2000)</code>. Cuando termina esa espera, simula que el usuario abre la calculadora y crea el proceso <code>Abrir calculadora</code>. Ese proceso entra a la cola de listos. En la siguiente revision, SRTF compara los tiempos restantes y lo acomoda automaticamente.</div>
 
 
 <div class="tabs"><button class="tab active" data-g="srtf" data-t="srtfj">Java</button><button class="tab" data-g="srtf" data-t="srtfp">Python</button></div>
 
-<div id="srtfj" class="code-panel active"><div class="codebox"><div class="codebar">SRTF.java</div><pre><code class="language-java">import java.util.ArrayList;
+<div id="srtfj" class="code-panel active">
 
-// Este hilo simula que un nuevo proceso llega despues de un tiempo
+<div class="card">
+  <strong>Como leer este codigo</strong>
+  <div class="callout-list">
+    <div class="callout-item"><b>1.</b> <code>colaListos</code> representa la cola de procesos listos del sistema operativo.</div>
+    <div class="callout-item"><b>2.</b> <code>LlegadaProceso</code> espera 2 segundos y despues agrega un proceso nuevo.</div>
+    <div class="callout-item"><b>3.</b> <code>elegirMasCorto()</code> representa al planificador SRTF.</div>
+    <div class="callout-item"><b>4.</b> Cada <code>Thread.sleep(1000)</code> representa una unidad de tiempo de la simulacion.</div>
+  </div>
+</div>
+
+<div class="codebox"><div class="codebar">SRTF.java</div><pre><code class="language-java">import java.util.ArrayList;
+
+
+// Esta clase simula que un nuevo proceso llega despues
 class LlegadaProceso extends Thread {
 
-    ArrayList&lt;Proceso&gt; lista;
+    // Esta es la misma cola de listos que usa el planificador
+    ArrayList&lt;Proceso&gt; colaListos;
 
-    public LlegadaProceso(ArrayList&lt;Proceso&gt; lista) {
 
-        // Guardamos la misma lista que usa el planificador
-        this.lista = lista;
+    public LlegadaProceso(ArrayList&lt;Proceso&gt; colaListos) {
+
+        // Guardamos la cola para poder agregar un proceso despues
+        this.colaListos = colaListos;
     }
+
 
     public void run() {
 
         try {
 
-            // Esperamos 2 segundos antes de que llegue el nuevo proceso
+            // Esperamos 2 segundos
+            // Durante este tiempo otro proceso ya esta usando la CPU
             Thread.sleep(2000);
 
         } catch (Exception error) {
@@ -967,108 +990,163 @@ class LlegadaProceso extends Thread {
             System.out.println("Error en la espera");
         }
 
-        // Creamos el proceso justo despues del timeout
-        Proceso llamadaCorta =
-            new Proceso("Llamada corta", 2, 2, 1);
 
-        // Agregamos el nuevo proceso a la cola de listos
-        synchronized (lista) {
-            lista.add(llamadaCorta);
+        // Despues del timeout simulamos que el usuario
+        // abre la calculadora
+        Proceso calculadora =
+            new Proceso("Abrir calculadora", 2, 2, 1);
+
+
+        // El nuevo proceso entra a la cola de listos
+        synchronized (colaListos) {
+
+            colaListos.add(calculadora);
         }
 
+
         System.out.println("");
-        System.out.println("Llego un nuevo proceso: " + llamadaCorta.nombre);
+        System.out.println(
+            "Nuevo proceso en la cola: " + calculadora.nombre
+        );
         System.out.println("");
     }
 }
 
 
+
 public class SRTF {
 
-    public static void main(String[] args) {
 
-        // Esta lista puede recibir procesos mientras el programa esta corriendo
-        ArrayList&lt;Proceso&gt; lista = new ArrayList&lt;Proceso&gt;();
+    // Este metodo representa al planificador
+    // Busca el proceso con menor tiempo restante
+    public static Proceso elegirMasCorto(
+        ArrayList&lt;Proceso&gt; colaListos
+    ) {
 
-        // Al inicio solo existe una tarea larga
-        Proceso tareaLarga =
-            new Proceso("Tarea larga", 0, 7, 1);
+        Proceso mejor = null;
 
-        // Agregamos la tarea inicial
-        lista.add(tareaLarga);
 
-        // Creamos el hilo que hara llegar otro proceso
-        LlegadaProceso llegada =
-            new LlegadaProceso(lista);
+        // Recorremos la cola posicion por posicion
+        for (int i = 0; i &lt; colaListos.size(); i++) {
 
-        // Iniciamos el timeout de llegada
-        llegada.start();
+            // Tomamos el proceso de la posicion i
+            Proceso proceso = colaListos.get(i);
 
-        int tiempo = 0;
 
-        while (true) {
+            // Solo miramos procesos que no han terminado
+            if (proceso.restante &gt; 0) {
 
-            Proceso mejor = null;
 
-            // Bloqueamos la lista mientras la revisamos
-            synchronized (lista) {
+                // Si todavia no tenemos un proceso elegido
+                if (mejor == null) {
 
-                // Recorremos todos los procesos que ya llegaron
-                for (int i = 0; i &lt; lista.size(); i++) {
+                    mejor = proceso;
 
-                    // Tomamos el proceso de la posicion i
-                    Proceso proceso = lista.get(i);
+                } else {
 
-                    // Solo miramos procesos que no han terminado
-                    if (proceso.restante &gt; 0) {
 
-                        // Si es el primero, lo guardamos
-                        if (mejor == null) {
+                    // Si este proceso necesita menos tiempo
+                    if (proceso.restante &lt; mejor.restante) {
 
-                            mejor = proceso;
-
-                        } else {
-
-                            // Si este proceso tiene menos tiempo restante
-                            if (proceso.restante &lt; mejor.restante) {
-
-                                // SRTF cambia al proceso mas corto
-                                mejor = proceso;
-                            }
-                        }
+                        mejor = proceso;
                     }
                 }
             }
+        }
 
-            // Si encontramos un proceso para ejecutar
-            if (mejor != null) {
+
+        // Devolvemos el proceso que debe usar la CPU
+        return mejor;
+    }
+
+
+
+    public static void main(String[] args) {
+
+
+        // Esta lista representa la cola de listos
+        ArrayList&lt;Proceso&gt; colaListos =
+            new ArrayList&lt;Proceso&gt;();
+
+
+        // Al inicio solo existe una tarea larga
+        Proceso descarga =
+            new Proceso("Descargar archivo", 0, 7, 1);
+
+
+        // La descarga entra a la cola de listos
+        colaListos.add(descarga);
+
+
+        // Creamos el hilo que simula una nueva llegada
+        LlegadaProceso llegada =
+            new LlegadaProceso(colaListos);
+
+
+        // Empezamos a contar el timeout
+        llegada.start();
+
+
+        int tiempo = 0;
+
+
+        while (true) {
+
+
+            Proceso actual;
+
+
+            // Protegemos la cola mientras el planificador la revisa
+            synchronized (colaListos) {
+
+                // El planificador escoge el proceso mas corto
+                actual = elegirMasCorto(colaListos);
+            }
+
+
+            // Si hay un proceso para ejecutar
+            if (actual != null) {
+
 
                 System.out.println(
                     "Tiempo " + tiempo +
-                    ": ejecuta " + mejor.nombre +
-                    " | restante: " + mejor.restante
+                    " -> CPU: " + actual.nombre +
+                    " | restante: " + actual.restante
                 );
 
-                // Ejecutamos una unidad de tiempo
-                mejor.restante--;
+
+                // Simulamos una unidad de trabajo de la CPU
+                actual.restante--;
+
+
+                // Si llego a cero, termino
+                if (actual.restante == 0) {
+
+                    System.out.println(
+                        actual.nombre + " termino"
+                    );
+                }
 
             } else {
 
-                // Si el hilo de llegada ya termino y no queda trabajo
+
+                // Si ya no viene otro proceso, terminamos la simulacion
                 if (llegada.isAlive() == false) {
 
                     break;
                 }
 
+
                 System.out.println(
                     "Tiempo " + tiempo +
-                    ": CPU esperando un nuevo proceso"
+                    " -> CPU esperando"
                 );
             }
 
+
             try {
 
-                // Cada segundo representa una unidad de tiempo
+                // Una unidad de tiempo dura un segundo
                 Thread.sleep(1000);
 
             } catch (Exception error) {
@@ -1076,19 +1154,26 @@ public class SRTF {
                 System.out.println("Error en la pausa");
             }
 
+
+            // Avanzamos el reloj de la simulacion
             tiempo++;
         }
 
+
         System.out.println("Todos los procesos terminaron");
     }
-}</code></pre></div></div>
+}</code></pre></div>
+
+<div class="note"><b>Relacion con el sistema operativo:</b> <code>colaListos</code> representa la cola de listos, <code>elegirMasCorto()</code> representa la decision del planificador y el hilo <code>LlegadaProceso</code> representa un evento externo que hace aparecer un proceso nuevo. Es una simulacion educativa, no el codigo real de Windows, Linux o Android.</div>
+
+</div>
 
 <div id="srtfp" class="code-panel"><div class="codebox"><div class="codebar">srtf.py</div><pre><code class="language-python">import time
 
 lista = [
-    Proceso("Tarea larga", 0, 7, 1),
-    Proceso("Llamada corta", 2, 4, 1),
-    Proceso("Mensaje rapido", 4, 1, 1)
+    Proceso("Descargar archivo", 0, 7, 1),
+    Proceso("Abrir calculadora", 2, 4, 1),
+    Proceso("Abrir bloc de notas", 4, 1, 1)
 ]
 
 # Solo para la demostracion:
@@ -2065,31 +2150,31 @@ function iniciarSimulacionSRTF(){
   reiniciarSimulacionSRTF();
 
   // Tiempo 0: empieza una tarea larga.
-  mostrarCpuSRTF("Tarea larga",7,"long");
+  mostrarCpuSRTF("Descargar archivo",7,"long");
   mostrarColaSRTF([]);
-  eventoSRTF(0,"Empieza Tarea larga. Necesita 7 unidades de tiempo.");
+  eventoSRTF(0,"Empieza Descargar archivo. Necesita 7 unidades de tiempo.");
 
   // Despues de 1.5 segundos simulamos que pasan 2 unidades.
   srtfTimers.push(setTimeout(()=>{
-    mostrarCpuSRTF("Tarea larga",5,"long");
+    mostrarCpuSRTF("Descargar archivo",5,"long");
     eventoSRTF(2,"La tarea larga sigue ejecutando. Ahora le faltan 5.");
   },1500));
 
   // Llega una tarea mas corta.
   srtfTimers.push(setTimeout(()=>{
     mostrarColaSRTF([
-      {nombre:"Llamada corta",restante:2,clase:"short"}
+      {nombre:"Abrir calculadora",restante:2,clase:"short"}
     ]);
 
-    eventoSRTF(2,"Llega Llamada corta con tiempo 2. Como 2 es menor que 5, SRTF debe cambiar.");
+    eventoSRTF(2,"Llega Abrir calculadora con tiempo 2. Como 2 es menor que 5, SRTF debe cambiar.");
   },2600));
 
   // SRTF interrumpe la tarea larga y entrega la CPU a la corta.
   srtfTimers.push(setTimeout(()=>{
-    mostrarCpuSRTF("Llamada corta",2,"short");
+    mostrarCpuSRTF("Abrir calculadora",2,"short");
 
     mostrarColaSRTF([
-      {nombre:"Tarea larga",restante:5,clase:"long"}
+      {nombre:"Descargar archivo",restante:5,clase:"long"}
     ]);
 
     eventoSRTF(2,"La llamada corta toma la CPU. La tarea larga vuelve a la cola.");
@@ -2097,14 +2182,14 @@ function iniciarSimulacionSRTF(){
 
   // La tarea corta termina.
   srtfTimers.push(setTimeout(()=>{
-    mostrarCpuSRTF("Llamada corta",0,"short");
+    mostrarCpuSRTF("Abrir calculadora",0,"short");
 
     eventoSRTF(4,"La llamada corta termina.");
   },5000));
 
   // Se retoma la tarea larga.
   srtfTimers.push(setTimeout(()=>{
-    mostrarCpuSRTF("Tarea larga",5,"long");
+    mostrarCpuSRTF("Descargar archivo",5,"long");
     mostrarColaSRTF([]);
 
     eventoSRTF(4,"La CPU vuelve a la tarea larga porque ya no hay otra tarea mas corta.");
