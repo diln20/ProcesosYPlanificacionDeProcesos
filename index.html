@@ -318,6 +318,26 @@ pre code{
   fill:#1e293b!important;
 }
 
+
+/* ===== Correccion final de etiquetas de transicion ===== */
+.diagram .mermaid g.edgeLabel > text,
+.diagram .mermaid g.edgeLabel text,
+.diagram .mermaid g.edgeLabel tspan,
+.diagram .mermaid text.edgeLabel,
+.diagram .mermaid text.edgeLabel tspan{
+  fill:#111827!important;
+  color:#111827!important;
+  stroke:none!important;
+  font-weight:800!important;
+}
+.diagram .mermaid g.edgeLabel > rect,
+.diagram .mermaid .labelBkg{
+  fill:#fff7ed!important;
+  stroke:#fb923c!important;
+  stroke-width:1.5px!important;
+  opacity:1!important;
+}
+
 </style>
 </head>
 <body>
@@ -840,6 +860,69 @@ function configurarMermaid(){
   }
 }
 
+function corregirEtiquetasMermaid(bloque){
+  try{
+    const svg=bloque.querySelector("svg");
+    if(!svg)return;
+
+    requestAnimationFrame(()=>{
+      try{
+        const etiquetas=[...svg.querySelectorAll(".edgeLabel")];
+
+        etiquetas.forEach((etiqueta)=>{
+          // Texto SVG
+          etiqueta.querySelectorAll("text,tspan").forEach((nodo)=>{
+            nodo.style.setProperty("fill","#111827","important");
+            nodo.style.setProperty("color","#111827","important");
+            nodo.style.setProperty("stroke","none","important");
+            nodo.style.setProperty("font-weight","800","important");
+          });
+
+          // Texto HTML dentro de foreignObject
+          etiqueta.querySelectorAll("div,span,p").forEach((nodo)=>{
+            nodo.style.setProperty("color","#111827","important");
+            nodo.style.setProperty("background","#fff7ed","important");
+            nodo.style.setProperty("border","1px solid #fb923c","important");
+            nodo.style.setProperty("border-radius","8px","important");
+            nodo.style.setProperty("padding","3px 7px","important");
+            nodo.style.setProperty("font-weight","800","important");
+            nodo.style.setProperty("white-space","nowrap","important");
+          });
+
+          let fondo=etiqueta.querySelector("rect.labelBkg, rect");
+          const texto=etiqueta.querySelector("text") || etiqueta.querySelector("foreignObject");
+
+          // Si Mermaid no creo un fondo, lo agregamos nosotros.
+          if(!fondo && texto && etiqueta.namespaceURI==="http://www.w3.org/2000/svg"){
+            try{
+              const caja=texto.getBBox();
+              fondo=document.createElementNS("http://www.w3.org/2000/svg","rect");
+              fondo.setAttribute("x",String(caja.x-8));
+              fondo.setAttribute("y",String(caja.y-5));
+              fondo.setAttribute("width",String(caja.width+16));
+              fondo.setAttribute("height",String(caja.height+10));
+              fondo.setAttribute("rx","8");
+              fondo.setAttribute("ry","8");
+              etiqueta.insertBefore(fondo,etiqueta.firstChild);
+            }catch(e){}
+          }
+
+          if(fondo){
+            fondo.style.setProperty("fill","#fff7ed","important");
+            fondo.style.setProperty("stroke","#fb923c","important");
+            fondo.style.setProperty("stroke-width","1.5px","important");
+            fondo.style.setProperty("opacity","1","important");
+            fondo.setAttribute("rx","8");
+            fondo.setAttribute("ry","8");
+          }
+        });
+      }catch(e){
+        console.warn("No se pudieron corregir las etiquetas Mermaid:",e);
+      }
+    });
+  }catch(e){}
+}
+
 function ajustarViewBoxMermaid(bloque){
   try{
     const svg=bloque.querySelector("svg");
@@ -890,6 +973,7 @@ async function renderizarDiagramas(){
       bloque.innerHTML=resultado.svg;
       bloque.dataset.rendered="true";
       if(resultado.bindFunctions) resultado.bindFunctions(bloque);
+      corregirEtiquetasMermaid(bloque);
       ajustarViewBoxMermaid(bloque);
     }catch(e){
       console.error("Error Mermaid en diagrama",i,codigo,e);
