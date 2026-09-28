@@ -5,12 +5,65 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Procesos y Planificación de Procesos</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/styles/atom-one-dark.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tippy.js@6/animations/scale.css">
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.11.1/lib/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/tippy.js@6"></script>
+<script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom/dist/panzoom.min.js"></script>
 <style>
 :root{--bg:#07101d;--panel:#0e1a2c;--panel2:#13243a;--text:#edf4ff;--muted:#9db1ca;--line:#27415f;--a:#61dafb;--b:#a78bfa;--ok:#34d399;--warn:#fbbf24;--code:#0b1020}
 [data-theme="light"]{--bg:#eef4fb;--panel:#fff;--panel2:#f5f8fc;--text:#152238;--muted:#5c6c81;--line:#d7e1ed;--a:#0284c7;--b:#7c3aed;--ok:#059669;--warn:#b7791f}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.65}.layout{display:grid;grid-template-columns:290px 1fr;min-height:100vh}aside{position:sticky;top:0;height:100vh;overflow:auto;padding:22px 16px;border-right:1px solid var(--line);background:var(--panel)}main{min-width:0}.brand{font-weight:900;font-size:18px;margin-bottom:16px}.brand small{display:block;font-size:12px;color:var(--muted);font-weight:500}.nav{display:grid;gap:5px}.nav a{display:flex;gap:9px;align-items:center;padding:9px 10px;border-radius:10px;color:var(--muted);text-decoration:none;border:1px solid transparent}.nav a:hover,.nav a.active{color:var(--text);background:var(--panel2);border-color:var(--line)}.num{width:27px;height:27px;display:grid;place-items:center;border-radius:8px;background:var(--panel2);color:var(--a);font-size:11px;font-weight:900}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:8px 11px;border-radius:10px;cursor:pointer;margin-bottom:14px}.hero{padding:64px 7vw 38px;border-bottom:1px solid var(--line);background:radial-gradient(circle at 10% 10%,rgba(97,218,251,.15),transparent 30%),radial-gradient(circle at 85% 5%,rgba(167,139,250,.18),transparent 30%)}.hero h1{font-size:clamp(38px,5vw,68px);line-height:1.03;margin:8px 0 16px;max-width:1000px}.hero p{font-size:18px;color:var(--muted);max-width:900px}.eyebrow{color:var(--a);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:900}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.badge{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--panel2);font-size:12px;color:var(--muted)}.content{width:min(1180px,92%);margin:auto;padding:40px 0 90px}.section{scroll-margin-top:18px;padding:24px;margin-bottom:26px;border:1px solid var(--line);border-radius:20px;background:var(--panel)}.section h2{margin:0 0 8px;font-size:29px}.section h3{margin-top:22px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{padding:15px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}.card strong{display:block;color:var(--a);margin-bottom:5px}.note,.warn,.goal{padding:13px 15px;margin:14px 0;border-radius:11px;background:var(--panel2)}.note{border-left:4px solid var(--b)}.warn{border-left:4px solid var(--warn)}.goal{border-left:4px solid var(--a)}.diagram{padding:18px;margin:16px 0;border:1px solid var(--line);border-radius:16px;background:#f8fbff;color:#152238;overflow:auto}.diagram .mermaid{min-width:600px}.table{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}th{background:var(--panel2);color:var(--a)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tab{border:1px solid var(--line);background:var(--panel2);color:var(--muted);padding:8px 12px;border-radius:10px;font-weight:800;cursor:pointer}.tab.active{background:linear-gradient(135deg,var(--a),var(--b));color:#07101d;border-color:transparent}.code-panel{display:none}.code-panel.active{display:block}.codebox{overflow:hidden;border:1px solid #283650;border-radius:14px;background:var(--code);margin:12px 0}.codebar{padding:9px 12px;border-bottom:1px solid #26344f;background:#141d2e;color:#b8c5d8;font-size:12px}pre{margin:0;padding:16px;overflow:auto;background:var(--code);font-size:13px;line-height:1.65}.gantt{display:flex;overflow:auto;margin:12px 0;border:1px solid var(--line);border-radius:12px}.gantt span{min-width:90px;padding:14px 10px;text-align:center;background:var(--panel2);border-right:1px solid var(--line);font-weight:900}.exercise{padding:15px;margin:12px 0;border:1px dashed var(--a);border-radius:14px;background:var(--panel2)}.quiz label{display:block;padding:9px 11px;margin:6px 0;border:1px solid var(--line);border-radius:9px;background:var(--panel2)}.footer{text-align:center;color:var(--muted);padding:30px}.mobile{display:none}@media(max-width:950px){.layout{display:block}aside{position:fixed;z-index:30;left:0;top:0;width:min(88vw,330px);transform:translateX(-105%);transition:.2s}.menu-open aside{transform:translateX(0)}.mobile{display:flex;position:sticky;top:0;z-index:20;justify-content:space-between;padding:9px 12px;background:var(--panel);border-bottom:1px solid var(--line)}.grid2,.grid3{grid-template-columns:1fr}.hero{padding:48px 22px 30px}}
+
+/* ===== Diagramas interactivos ===== */
+.diagram{position:relative;margin:18px 0;padding:0!important;border:1px solid #d8e2ef!important;border-radius:20px!important;background:linear-gradient(180deg,#fbfdff 0%,#f2f7fc 100%)!important;color:#142033!important;overflow:hidden!important;box-shadow:0 14px 34px rgba(16,24,40,.08)!important}
+.diagram:hover{box-shadow:0 18px 42px rgba(16,24,40,.13)!important;border-color:#c4b5fd!important}
+.diagram-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid #dde5ef;background:linear-gradient(110deg,#faf7ff 0%,#f3f7ff 50%,#eefcff 100%)}
+.diagram-title-wrap{display:flex;align-items:center;gap:10px;min-width:0}
+.diagram-icon{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:#ede9fe;color:#7c3aed;flex:0 0 auto}
+.diagram-title{font-weight:900;font-size:14px;color:#182335}
+.diagram-subtitle{font-size:12px;color:#64748b}
+.diagram-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.diagram-btn{border:1px solid #d8deea;background:#fff;color:#334155;border-radius:10px;padding:7px 10px;cursor:pointer;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:6px;box-shadow:0 4px 12px rgba(15,23,42,.05)}
+.diagram-btn:hover{border-color:#a78bfa;background:#faf7ff;color:#6d28d9}
+.diagram-stage{position:relative;padding:24px;overflow:hidden;background:radial-gradient(circle at 18% 20%,rgba(167,139,250,.10),transparent 24%),radial-gradient(circle at 82% 78%,rgba(34,211,238,.11),transparent 28%),linear-gradient(180deg,#fbfdff 0%,#f2f8fc 100%)}
+.diagram-stage::before{content:'';position:absolute;inset:0;opacity:.32;pointer-events:none;background-image:radial-gradient(#cbd5e1 .8px,transparent .8px);background-size:16px 16px}
+.diagram-stage>.mermaid{position:relative;z-index:1;min-width:650px;min-height:240px;display:flex;align-items:center;justify-content:center;padding:10px 6px;transform-origin:center center}
+.diagram-tip{padding:0 16px 14px;font-size:12px;color:#64748b;background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.55) 100%)}
+.diagram .mermaid svg{max-width:100%!important;height:auto!important;overflow:visible}
+.diagram .mermaid .edgePath path{stroke:#7c3aed!important;stroke-width:2.2px!important}
+.diagram .mermaid marker path{fill:#7c3aed!important;stroke:#7c3aed!important}
+.diagram .mermaid .edgeLabel{background:#fff!important;border:1px solid #ddd6fe;border-radius:8px;color:#6d28d9!important;font-weight:800!important;padding:2px 6px}
+.diagram .mermaid .node rect,.diagram .mermaid .node polygon,.diagram .mermaid .node path{stroke-width:1.7px!important;filter:drop-shadow(0 10px 12px rgba(51,65,85,.10))}
+.diagram .mermaid .node .label,.diagram .mermaid .nodeLabel{font-weight:750!important}
+.diagram .mermaid .node:nth-of-type(6n+1) rect,.diagram .mermaid .node:nth-of-type(6n+1) polygon,.diagram .mermaid .node:nth-of-type(6n+1) path{fill:#7c3aed!important;stroke:#6d28d9!important}
+.diagram .mermaid .node:nth-of-type(6n+1) .label,.diagram .mermaid .node:nth-of-type(6n+1) .nodeLabel{fill:#fff!important;color:#fff!important}
+.diagram .mermaid .node:nth-of-type(6n+2) rect,.diagram .mermaid .node:nth-of-type(6n+2) polygon,.diagram .mermaid .node:nth-of-type(6n+2) path{fill:#0891b2!important;stroke:#0e7490!important}
+.diagram .mermaid .node:nth-of-type(6n+2) .label,.diagram .mermaid .node:nth-of-type(6n+2) .nodeLabel{fill:#fff!important;color:#fff!important}
+.diagram .mermaid .node:nth-of-type(6n+3) rect,.diagram .mermaid .node:nth-of-type(6n+3) polygon,.diagram .mermaid .node:nth-of-type(6n+3) path{fill:#2563eb!important;stroke:#1d4ed8!important}
+.diagram .mermaid .node:nth-of-type(6n+3) .label,.diagram .mermaid .node:nth-of-type(6n+3) .nodeLabel{fill:#fff!important;color:#fff!important}
+.diagram .mermaid .node:nth-of-type(6n+4) rect,.diagram .mermaid .node:nth-of-type(6n+4) polygon,.diagram .mermaid .node:nth-of-type(6n+4) path{fill:#ec4899!important;stroke:#db2777!important}
+.diagram .mermaid .node:nth-of-type(6n+4) .label,.diagram .mermaid .node:nth-of-type(6n+4) .nodeLabel{fill:#fff!important;color:#fff!important}
+.diagram .mermaid .node:nth-of-type(6n+5) rect,.diagram .mermaid .node:nth-of-type(6n+5) polygon,.diagram .mermaid .node:nth-of-type(6n+5) path{fill:#fff7ed!important;stroke:#fb923c!important}
+.diagram .mermaid .node:nth-of-type(6n+5) .label,.diagram .mermaid .node:nth-of-type(6n+5) .nodeLabel{fill:#9a3412!important;color:#9a3412!important}
+.diagram .mermaid .node:nth-of-type(6n+6) rect,.diagram .mermaid .node:nth-of-type(6n+6) polygon,.diagram .mermaid .node:nth-of-type(6n+6) path{fill:#ecfeff!important;stroke:#22d3ee!important}
+.diagram .mermaid .node:nth-of-type(6n+6) .label,.diagram .mermaid .node:nth-of-type(6n+6) .nodeLabel{fill:#155e75!important;color:#155e75!important}
+.diagram-modal{position:fixed;inset:0;background:rgba(3,7,18,.78);display:none;align-items:center;justify-content:center;padding:26px;z-index:120}
+.diagram-modal.show{display:flex}
+.diagram-modal-card{width:min(1200px,96vw);height:min(86vh,900px);background:#f8fbff;border:1px solid #dce6f2;border-radius:22px;overflow:hidden;box-shadow:0 32px 64px rgba(2,6,23,.35);display:flex;flex-direction:column}
+.diagram-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #dde5ef;background:linear-gradient(110deg,#faf7ff 0%,#f3f7ff 50%,#eefcff 100%);color:#142033}
+.diagram-modal-title{font-weight:900}
+.diagram-modal-body{flex:1;position:relative;overflow:hidden;background:radial-gradient(circle at 18% 20%,rgba(167,139,250,.10),transparent 24%),radial-gradient(circle at 82% 78%,rgba(34,211,238,.11),transparent 28%),linear-gradient(180deg,#fbfdff 0%,#f2f8fc 100%)}
+.diagram-modal-body::before{content:'';position:absolute;inset:0;opacity:.30;background-image:radial-gradient(#cbd5e1 .8px,transparent .8px);background-size:16px 16px}
+.diagram-zoom-stage{position:relative;z-index:1;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:18px;transform-origin:center center}
+.diagram-modal-body svg{max-width:100%;max-height:100%;height:auto!important}
+.diagram-modal-foot{padding:11px 16px;border-top:1px solid #dde5ef;background:#fff;color:#64748b;font-size:12px}
+@media(max-width:640px){.diagram-stage>.mermaid{min-width:480px}.diagram-actions{width:100%}.diagram-btn{flex:1;justify-content:center}}
+
 </style>
 </head>
 <body>
@@ -393,14 +446,164 @@ B -->|espera demasiado| A</div></div>
 </main>
 </div>
 <script>
-mermaid.initialize({startOnLoad:true,theme:"default",securityLevel:"loose"});
+mermaid.initialize({
+  startOnLoad:false,
+  theme:'base',
+  securityLevel:'loose',
+  themeVariables:{
+    primaryColor:'#7c3aed',
+    primaryTextColor:'#ffffff',
+    primaryBorderColor:'#6d28d9',
+    lineColor:'#7c3aed',
+    secondaryColor:'#0891b2',
+    tertiaryColor:'#ecfeff',
+    fontFamily:'Inter, Segoe UI, sans-serif',
+    clusterBkg:'#ffffff',
+    clusterBorder:'#c4b5fd',
+    edgeLabelBackground:'#ffffff',
+    noteBkgColor:'#fff7ed',
+    noteBorderColor:'#fdba74'
+  },
+  flowchart:{curve:'basis'}
+});
 hljs.highlightAll();
-function tema(){const r=document.documentElement;r.dataset.theme=r.dataset.theme==="light"?"dark":"light";localStorage.setItem("tema-procesos",r.dataset.theme)}
-const guardado=localStorage.getItem("tema-procesos");if(guardado)document.documentElement.dataset.theme=guardado;
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{const g=b.dataset.g;document.querySelectorAll('.tab[data-g="'+g+'"]').forEach(x=>x.classList.remove("active"));b.classList.add("active");const ids={obj:["objj","objp"],fcfs:["fcfsj","fcfsp"],sjf:["sjfj","sjfp"],prio:["prioj","priop"],rr:["rrj","rrp"],multi:["multij","multip"]};ids[g].forEach(id=>document.getElementById(id).classList.remove("active"));document.getElementById(b.dataset.t).classList.add("active")});
-function calificar(){let n=0;document.querySelectorAll(".quiz").forEach(q=>{const x=q.querySelector("input:checked");if(x&&x.value===q.dataset.a)n++});document.getElementById("resultado").textContent=" Resultado: "+n+" / 3";}
-const sec=[...document.querySelectorAll(".section")], links=[...document.querySelectorAll(".nav a")];
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))}),{rootMargin:"-25% 0px -65% 0px"});sec.forEach(s=>io.observe(s));
+
+function tema(){
+  const r=document.documentElement;
+  r.dataset.theme=r.dataset.theme==="light"?"dark":"light";
+  localStorage.setItem("tema-procesos",r.dataset.theme);
+}
+const guardado=localStorage.getItem("tema-procesos");
+if(guardado)document.documentElement.dataset.theme=guardado;
+
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+  const g=b.dataset.g;
+  document.querySelectorAll('.tab[data-g="'+g+'"]').forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  const ids={obj:["objj","objp"],fcfs:["fcfsj","fcfsp"],sjf:["sjfj","sjfp"],prio:["prioj","priop"],rr:["rrj","rrp"],multi:["multij","multip"]};
+  ids[g].forEach(id=>document.getElementById(id).classList.remove("active"));
+  document.getElementById(b.dataset.t).classList.add("active");
+});
+
+function calificar(){
+  let n=0;
+  document.querySelectorAll(".quiz").forEach(q=>{
+    const x=q.querySelector("input:checked");
+    if(x&&x.value===q.dataset.a)n++;
+  });
+  document.getElementById("resultado").textContent=" Resultado: "+n+" / 3";
+}
+
+function crearModalDiagrama(){
+  if(document.getElementById('diagramModal')) return;
+  const modal=document.createElement('div');
+  modal.id='diagramModal';
+  modal.className='diagram-modal';
+  modal.innerHTML=`
+    <div class="diagram-modal-card">
+      <div class="diagram-modal-head">
+        <div class="diagram-modal-title" id="diagramModalTitle">Diagrama ampliado</div>
+        <div class="diagram-actions">
+          <button class="diagram-btn" id="modalZoom"><i data-lucide="zoom-in"></i> Acercar</button>
+          <button class="diagram-btn" id="modalReset"><i data-lucide="rotate-ccw"></i> Restablecer</button>
+          <button class="diagram-btn" id="modalClose"><i data-lucide="x"></i> Cerrar</button>
+        </div>
+      </div>
+      <div class="diagram-modal-body"><div class="diagram-zoom-stage" id="diagramModalStage"></div></div>
+      <div class="diagram-modal-foot">Arrastra el diagrama y usa la rueda del mouse para hacer zoom.</div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click',e=>{if(e.target===modal)cerrarModalDiagrama()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarModalDiagrama()});
+}
+
+let modalPanzoom=null;
+function abrirModalDiagrama(titulo,svg){
+  crearModalDiagrama();
+  const modal=document.getElementById('diagramModal');
+  const stage=document.getElementById('diagramModalStage');
+  document.getElementById('diagramModalTitle').textContent=titulo;
+  stage.innerHTML='<div>'+svg+'</div>';
+  const target=stage.firstElementChild;
+  modal.classList.add('show');
+  try{
+    modalPanzoom=Panzoom(target,{maxScale:3.5,minScale:.7,contain:'outside'});
+    stage.parentElement.onwheel=modalPanzoom.zoomWithWheel;
+  }catch(e){}
+  document.getElementById('modalZoom').onclick=()=>modalPanzoom&&modalPanzoom.zoomIn();
+  document.getElementById('modalReset').onclick=()=>modalPanzoom&&modalPanzoom.reset();
+  document.getElementById('modalClose').onclick=cerrarModalDiagrama;
+  lucide.createIcons();
+}
+function cerrarModalDiagrama(){
+  const modal=document.getElementById('diagramModal');
+  if(modal)modal.classList.remove('show');
+}
+
+function mejorarDiagramas(){
+  document.querySelectorAll('.diagram').forEach((diagram,index)=>{
+    if(diagram.dataset.enhanced==='1')return;
+    diagram.dataset.enhanced='1';
+    const section=diagram.closest('.section');
+    const title=section?.querySelector('h2')?.textContent?.trim()||('Diagrama '+(index+1));
+    const mermaidBlock=diagram.querySelector('.mermaid');
+    if(!mermaidBlock)return;
+
+    const head=document.createElement('div');
+    head.className='diagram-head';
+    head.innerHTML=`
+      <div class="diagram-title-wrap">
+        <div class="diagram-icon"><i data-lucide="workflow"></i></div>
+        <div>
+          <div class="diagram-title">${title}</div>
+          <div class="diagram-subtitle">Diagrama interactivo</div>
+        </div>
+      </div>
+      <div class="diagram-actions">
+        <button class="diagram-btn" data-tip="Acercar el diagrama"><i data-lucide="zoom-in"></i> Acercar</button>
+        <button class="diagram-btn" data-tip="Volver al tamaño original"><i data-lucide="rotate-ccw"></i> Restablecer</button>
+        <button class="diagram-btn" data-tip="Abrir en una vista grande"><i data-lucide="maximize-2"></i> Ampliar</button>
+      </div>`;
+
+    const stage=document.createElement('div');
+    stage.className='diagram-stage';
+    const tip=document.createElement('div');
+    tip.className='diagram-tip';
+    tip.innerHTML='Arrastra para mover · rueda del mouse para zoom · <b>Ampliar</b> para estudiar el flujo con más detalle.';
+
+    diagram.innerHTML='';
+    stage.appendChild(mermaidBlock);
+    diagram.append(head,stage,tip);
+
+    let pz=null;
+    try{
+      pz=Panzoom(mermaidBlock,{maxScale:2.5,minScale:.8,contain:'outside'});
+      stage.addEventListener('wheel',pz.zoomWithWheel,{passive:false});
+    }catch(e){}
+
+    const buttons=head.querySelectorAll('.diagram-btn');
+    buttons[0].onclick=()=>pz&&pz.zoomIn();
+    buttons[1].onclick=()=>pz&&pz.reset();
+    buttons[2].onclick=()=>abrirModalDiagrama(title,mermaidBlock.innerHTML);
+  });
+
+  if(window.tippy)tippy('[data-tip]',{content:(el)=>el.dataset.tip,animation:'scale',placement:'top'});
+  lucide.createIcons();
+}
+
+document.addEventListener('DOMContentLoaded',async()=>{
+  AOS.init({duration:650,once:true,offset:40});
+  document.querySelectorAll('.section').forEach(s=>s.setAttribute('data-aos','fade-up'));
+  await mermaid.run({querySelector:'.mermaid'});
+  crearModalDiagrama();
+  mejorarDiagramas();
+
+  const sec=[...document.querySelectorAll(".section")],links=[...document.querySelectorAll(".nav a")];
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))
+  }),{rootMargin:"-25% 0px -65% 0px"});
+  sec.forEach(s=>io.observe(s));
+});
 </script>
 </body>
 </html>
