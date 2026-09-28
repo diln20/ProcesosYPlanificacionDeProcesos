@@ -171,6 +171,45 @@ pre code{
   .diagram .mermaid svg{min-width:820px!important}
 }
 
+
+/* ===== Anti-recorte definitivo para Mermaid ===== */
+.diagram-stage{
+  overflow:auto!important;
+  padding:34px!important;
+}
+.diagram-stage>.mermaid{
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  padding:0!important;
+  transform:none!important;
+  transform-origin:top left!important;
+}
+.diagram .mermaid svg{
+  display:block!important;
+  width:100%!important;
+  min-width:820px!important;
+  max-width:none!important;
+  height:auto!important;
+  overflow:visible!important;
+  margin:0 auto!important;
+}
+.diagram .mermaid text,
+.diagram .mermaid .nodeLabel,
+.diagram .mermaid .label{
+  font-size:16px!important;
+  font-weight:600!important;
+  line-height:1.2!important;
+}
+.diagram .mermaid foreignObject{
+  overflow:visible!important;
+}
+@media(max-width:640px){
+  .diagram-stage{padding:24px!important}
+  .diagram .mermaid svg{min-width:760px!important}
+}
+
 </style>
 </head>
 <body>
@@ -679,6 +718,7 @@ function configurarMermaid(){
         secondaryColor:"#0891b2",
         tertiaryColor:"#ecfeff",
         fontFamily:"Inter, Segoe UI, sans-serif",
+        fontSize:"16px",
         clusterBkg:"#ffffff",
         clusterBorder:"#c4b5fd",
         edgeLabelBackground:"#ffffff",
@@ -692,6 +732,38 @@ function configurarMermaid(){
     console.error("No se pudo inicializar Mermaid",e);
     return false;
   }
+}
+
+function ajustarViewBoxMermaid(bloque){
+  try{
+    const svg=bloque.querySelector("svg");
+    if(!svg) return;
+
+    // Esperamos un frame para que el navegador calcule textos, flechas y etiquetas.
+    requestAnimationFrame(()=>{
+      try{
+        const contenido=svg.querySelector("g") || svg;
+        const caja=contenido.getBBox();
+        const margenX=46;
+        const margenY=40;
+
+        svg.setAttribute(
+          "viewBox",
+          (caja.x-margenX)+" "+(caja.y-margenY)+" "+
+          (caja.width+margenX*2)+" "+(caja.height+margenY*2)
+        );
+
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
+        svg.style.width="100%";
+        svg.style.height="auto";
+        svg.style.overflow="visible";
+        svg.setAttribute("preserveAspectRatio","xMidYMid meet");
+      }catch(e){
+        console.warn("No se pudo ajustar viewBox Mermaid:",e);
+      }
+    });
+  }catch(e){}
 }
 
 async function renderizarDiagramas(){
@@ -712,6 +784,7 @@ async function renderizarDiagramas(){
       bloque.innerHTML=resultado.svg;
       bloque.dataset.rendered="true";
       if(resultado.bindFunctions) resultado.bindFunctions(bloque);
+      ajustarViewBoxMermaid(bloque);
     }catch(e){
       console.error("Error Mermaid en diagrama",i,codigo,e);
       mostrarErrorDiagrama(bloque,"Este diagrama no pudo renderizarse.");
@@ -753,7 +826,7 @@ function abrirModalDiagrama(titulo,svg){
   const modal=document.getElementById("diagramModal");
   const stage=document.getElementById("diagramModalStage");
   document.getElementById("diagramModalTitle").textContent=titulo;
-  stage.innerHTML='<div>'+svg+'</div>';
+  stage.innerHTML='<div style="padding:40px;min-width:900px">'+svg+'</div>';
   const target=stage.firstElementChild;
   modal.classList.add("show");
 
@@ -807,17 +880,27 @@ function mejorarDiagramas(){
     stage.appendChild(mermaidBlock);
     diagram.append(head,stage,tip);
 
-    let pz=null;
-    try{
-      if(window.Panzoom){
-        pz=Panzoom(mermaidBlock,{maxScale:2.5,minScale:.8,contain:"outside"});
-        stage.addEventListener("wheel",pz.zoomWithWheel,{passive:false});
-      }
-    }catch(e){ console.warn("Panzoom:",e); }
+    // El diagrama en línea no se transforma al cargar: así nunca aparece cortado.
+    // Los controles de acercar/restablecer usan un zoom CSS simple.
+    let escala=1;
+    const aplicarEscala=()=>{
+      mermaidBlock.style.transform="scale("+escala+")";
+      mermaidBlock.style.transformOrigin="top left";
+      mermaidBlock.style.width=(100/escala)+"%";
+    };
 
     const buttons=head.querySelectorAll(".diagram-btn");
-    buttons[0].onclick=()=>pz&&pz.zoomIn();
-    buttons[1].onclick=()=>pz&&pz.reset();
+    buttons[0].onclick=()=>{
+      escala=Math.min(1.6,escala+0.15);
+      aplicarEscala();
+    };
+    buttons[1].onclick=()=>{
+      escala=1;
+      mermaidBlock.style.transform="none";
+      mermaidBlock.style.width="100%";
+      stage.scrollLeft=0;
+      stage.scrollTop=0;
+    };
     buttons[2].onclick=()=>abrirModalDiagrama(title,mermaidBlock.innerHTML);
   });
 
