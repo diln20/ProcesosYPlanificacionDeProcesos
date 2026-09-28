@@ -210,6 +210,49 @@ pre code{
   .diagram .mermaid svg{min-width:760px!important}
 }
 
+
+/* ===== Diagrama de estados en tamaño compacto ===== */
+#estados .compact-diagram{
+  max-width:880px;
+  margin-left:auto;
+  margin-right:auto;
+}
+#estados .compact-diagram .diagram-stage{
+  padding:22px!important;
+}
+#estados .compact-diagram .mermaid{
+  width:100%!important;
+}
+#estados .compact-diagram .mermaid svg{
+  width:760px!important;
+  min-width:760px!important;
+  max-width:none!important;
+  margin:0 auto!important;
+}
+#estados .compact-diagram .mermaid text,
+#estados .compact-diagram .mermaid .nodeLabel,
+#estados .compact-diagram .mermaid .label{
+  font-size:14px!important;
+}
+@media(max-width:900px){
+  #estados .compact-diagram .mermaid svg{
+    width:700px!important;
+    min-width:700px!important;
+  }
+}
+@media(max-width:640px){
+  #estados .compact-diagram{
+    max-width:100%;
+  }
+  #estados .compact-diagram .diagram-stage{
+    padding:18px!important;
+  }
+  #estados .compact-diagram .mermaid svg{
+    width:650px!important;
+    min-width:650px!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -259,15 +302,13 @@ E --> F[Termina]</div></div>
 
 <section class="section" id="estados"><h2>2. PID, PCB y estados</h2>
 <p>El <b>PID</b> es un identificador único. El <b>PCB</b> representa la información que el sistema guarda para administrar cada proceso: PID, estado, prioridad y otros datos.</p>
-<div class="diagram"><div class="mermaid">stateDiagram-v2
-[*] --> Nuevo
-Nuevo --> Listo
-Listo --> Ejecutando
-Ejecutando --> Listo: pierde el turno
-Ejecutando --> Bloqueado: espera E/S
-Bloqueado --> Listo: termina espera
-Ejecutando --> Terminado
-Terminado --> [*]</div></div>
+<div class="diagram compact-diagram"><div class="mermaid">flowchart LR
+N["Nuevo"] --> L["Listo"]
+L --> E["Ejecutando"]
+E -->|termina| T["Terminado"]
+E -->|pierde turno| L
+E -->|espera E/S| B["Bloqueado"]
+B -->|fin E/S| L</div></div>
 <div class="grid2"><div class="card"><strong>Listo</strong>Quiere CPU, pero todavía espera su turno.</div><div class="card"><strong>Bloqueado</strong>No puede seguir hasta que ocurra algo, por ejemplo terminar una lectura.</div></div></section>
 
 <section class="section" id="familia"><h2>3. Procesos padre, hijo y huérfanos</h2>
