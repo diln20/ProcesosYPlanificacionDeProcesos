@@ -141,6 +141,36 @@ pre code{
   background:#0b1020!important;
 }
 
+
+/* ===== Corrección de recorte en diagramas Mermaid ===== */
+.diagram-stage{
+  overflow:auto!important;
+}
+.diagram-stage>.mermaid{
+  min-width:900px!important;
+  width:max-content!important;
+  padding:18px 28px!important;
+}
+.diagram .mermaid svg{
+  max-width:none!important;
+  width:auto!important;
+  min-width:900px!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+.diagram .mermaid text{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif!important;
+  font-size:15px!important;
+  font-weight:700!important;
+}
+.diagram .mermaid .label foreignObject{
+  overflow:visible!important;
+}
+@media(max-width:640px){
+  .diagram-stage>.mermaid,
+  .diagram .mermaid svg{min-width:820px!important}
+}
+
 </style>
 </head>
 <body>
@@ -158,13 +188,14 @@ pre code{
 <a href="#objeto"><span class="num">06</span>Objeto Proceso</a>
 <a href="#fcfs"><span class="num">07</span>FCFS</a>
 <a href="#sjf"><span class="num">08</span>SJF</a>
-<a href="#prioridad"><span class="num">09</span>Prioridad</a>
-<a href="#rr"><span class="num">10</span>Round Robin</a>
-<a href="#multinivel"><span class="num">11</span>Colas multinivel</a>
-<a href="#mlfq"><span class="num">12</span>MLFQ básico</a>
-<a href="#comparar"><span class="num">13</span>Comparación</a>
-<a href="#taller"><span class="num">14</span>Actividades</a>
-<a href="#quiz"><span class="num">15</span>Repaso final</a>
+<a href="#sjft"><span class="num">09</span>SJFT / SRTF</a>
+<a href="#prioridad"><span class="num">10</span>Prioridad</a>
+<a href="#rr"><span class="num">11</span>Round Robin</a>
+<a href="#multinivel"><span class="num">12</span>Colas multinivel</a>
+<a href="#mlfq"><span class="num">13</span>MLFQ básico</a>
+<a href="#comparar"><span class="num">14</span>Comparación</a>
+<a href="#taller"><span class="num">15</span>Actividades</a>
+<a href="#quiz"><span class="num">16</span>Repaso final</a>
 </nav>
 </aside>
 <main>
@@ -236,12 +267,14 @@ CPU -->|sale temporalmente| Q</div></div>
     int llegada;
     int rafaga;
     int prioridad;
+    int restante;
 
     public Proceso(String nombre, int llegada, int rafaga, int prioridad) {
         this.nombre = nombre;
         this.llegada = llegada;
         this.rafaga = rafaga;
         this.prioridad = prioridad;
+        this.restante = rafaga;
     }
 }</code></pre></div></div>
 <div id="objp" class="code-panel"><div class="codebox"><div class="codebar">proceso.py</div><pre><code class="language-python">class Proceso:
@@ -249,7 +282,8 @@ CPU -->|sale temporalmente| Q</div></div>
         self.nombre = nombre
         self.llegada = llegada
         self.rafaga = rafaga
-        self.prioridad = prioridad</code></pre></div></div>
+        self.prioridad = prioridad
+        self.restante = rafaga</code></pre></div></div>
 <div class="note"><b>Qué significa <code>this.nombre = nombre</code>:</b> el dato recibido por el constructor se guarda dentro del objeto actual.</div></section>
 
 <section class="section" id="fcfs"><h2>7. FCFS — First Come, First Served</h2>
@@ -331,7 +365,97 @@ for p in procesos:
     print(p.nombre, "->", p.rafaga)</code></pre></div></div>
 <div class="warn">Este ejemplo es SJF no apropiativo y simplificado: suponemos que los procesos ya están disponibles.</div></section>
 
-<section class="section" id="prioridad"><h2>9. Planificación por prioridad</h2>
+
+<section class="section" id="sjft"><h2>9. SJFT / SRTF — Menor tiempo restante</h2>
+<p><b>SJFT</b> se trabaja aquí como la versión apropiativa de SJF, conocida normalmente como <b>SRTF (Shortest Remaining Time First)</b>. En cada unidad de tiempo se revisan los procesos que ya llegaron y se ejecuta el que tenga el menor tiempo restante.</p>
+
+<div class="diagram"><div class="mermaid">flowchart LR
+A["t = 0 · P1 restante 7"] --> B["Ejecuta P1"]
+B --> C["t = 2 · llega P2 restante 4"]
+C --> D{"¿Quién tiene menor restante?"}
+D -->|P2| E["CPU cambia a P2"]
+E --> F["t = 4 · llega P3 restante 1"]
+F --> G["CPU cambia a P3"]
+G --> H["P3 termina"]
+H --> I["Se vuelve a comparar P1 y P2"]</div></div>
+
+<div class="goal"><b>Idea para recordar:</b> SJF elige el trabajo más corto y lo deja terminar; SJFT/SRTF puede <b>interrumpir</b> el proceso actual si llega otro con menor tiempo restante.</div>
+
+<div class="tabs"><button class="tab active" data-g="sjft" data-t="sjftj">Java</button><button class="tab" data-g="sjft" data-t="sjftp">Python</button></div>
+
+<div id="sjftj" class="code-panel active"><div class="codebox"><div class="codebar">SJFT.java</div><pre><code class="language-java">public class SJFT {
+    public static void main(String[] args) {
+        Proceso[] procesos = {
+            new Proceso("P1", 0, 7, 2),
+            new Proceso("P2", 2, 4, 1),
+            new Proceso("P3", 4, 1, 3)
+        };
+
+        int tiempo = 0;
+        int terminados = 0;
+
+        while (terminados &lt; procesos.length) {
+            Proceso mejor = null;
+
+            for (Proceso proceso : procesos) {
+                if (proceso.llegada &lt;= tiempo &amp;&amp; proceso.restante &gt; 0) {
+                    if (mejor == null || proceso.restante &lt; mejor.restante) {
+                        mejor = proceso;
+                    }
+                }
+            }
+
+            if (mejor == null) {
+                tiempo++;
+            } else {
+                System.out.println("Tiempo " + tiempo +
+                        ": ejecuta " + mejor.nombre);
+
+                mejor.restante--;
+                tiempo++;
+
+                if (mejor.restante == 0) {
+                    terminados++;
+                    System.out.println(mejor.nombre + " termino");
+                }
+            }
+        }
+    }
+}</code></pre></div></div>
+
+<div id="sjftp" class="code-panel"><div class="codebox"><div class="codebar">sjft.py</div><pre><code class="language-python">procesos = [
+    Proceso("P1", 0, 7, 2),
+    Proceso("P2", 2, 4, 1),
+    Proceso("P3", 4, 1, 3)
+]
+
+tiempo = 0
+terminados = 0
+
+while terminados &lt; len(procesos):
+    mejor = None
+
+    for proceso in procesos:
+        if proceso.llegada &lt;= tiempo and proceso.restante &gt; 0:
+            if mejor is None or proceso.restante &lt; mejor.restante:
+                mejor = proceso
+
+    if mejor is None:
+        tiempo += 1
+    else:
+        print("Tiempo", tiempo, ": ejecuta", mejor.nombre)
+
+        mejor.restante -= 1
+        tiempo += 1
+
+        if mejor.restante == 0:
+            terminados += 1
+            print(mejor.nombre, "termino")</code></pre></div></div>
+
+<div class="exercise"><b>Prueba:</b> agrega un P4 que llegue en el tiempo 3 con ráfaga 2. Revisa si desplaza al proceso que esté usando la CPU.</div>
+</section>
+
+<section class="section" id="prioridad"><h2>10. Planificación por prioridad</h2>
 <p>Cada proceso tiene una prioridad. Para este taller, <b>1 significa mayor prioridad</b>.</p>
 <div class="tabs"><button class="tab active" data-g="prio" data-t="prioj">Java</button><button class="tab" data-g="prio" data-t="priop">Python</button></div>
 <div id="prioj" class="code-panel active"><div class="codebox"><div class="codebar">Prioridad.java</div><pre><code class="language-java">public class Prioridad {
@@ -374,7 +498,7 @@ for p in procesos:
     print(p.nombre, "prioridad", p.prioridad)</code></pre></div></div>
 <div class="note">Si un proceso de prioridad baja espera demasiado, <b>aging</b> puede elevar gradualmente su prioridad.</div></section>
 
-<section class="section" id="rr"><h2>10. Round Robin</h2>
+<section class="section" id="rr"><h2>11. Round Robin</h2>
 <p>Cada proceso recibe un turno llamado <b>quantum</b>. Si no termina, vuelve al final de la cola.</p>
 <div class="diagram"><div class="mermaid">flowchart LR
 P1[P1] --> P2[P2] --> P3[P3] --> P1</div></div>
@@ -432,7 +556,7 @@ while quedan:
                 print(p.nombre, "usa", quantum)
                 p.rafaga = p.rafaga - quantum</code></pre></div></div></section>
 
-<section class="section" id="multinivel"><h2>11. Colas multinivel</h2>
+<section class="section" id="multinivel"><h2>12. Colas multinivel</h2>
 <p>No todos los procesos tienen que esperar en la misma cola. Podemos separar, por ejemplo, tareas interactivas y tareas de fondo.</p>
 <div class="diagram"><div class="mermaid">flowchart TD
 A[Procesos] --> H[Cola alta]
@@ -483,7 +607,7 @@ print("COLA BAJA")
 for p in baja:
     print("Ejecutando", p.nombre)</code></pre></div></div></section>
 
-<section class="section" id="mlfq"><h2>12. MLFQ básico</h2>
+<section class="section" id="mlfq"><h2>13. MLFQ básico</h2>
 <p>En las colas multinivel con realimentación, un proceso puede cambiar de cola según su comportamiento.</p>
 <div class="diagram"><div class="mermaid">flowchart TD
 A[Cola alta] -->|usa todo el quantum| B[Cola media]
@@ -492,17 +616,18 @@ C -->|espera demasiado / aging| B
 B -->|espera demasiado| A</div></div>
 <div class="note">Para mantener el código apto para principiantes, aquí nos concentramos en la idea: procesos que consumen mucho CPU pueden bajar de cola; procesos que esperan demasiado pueden subir.</div></section>
 
-<section class="section" id="comparar"><h2>13. Comparación</h2>
+<section class="section" id="comparar"><h2>14. Comparación</h2>
 <div class="table"><table><thead><tr><th>Algoritmo</th><th>Idea</th><th>Detalle importante</th></tr></thead><tbody>
 <tr><td>FCFS</td><td>Orden de llegada</td><td>Muy simple, pero un proceso largo puede retrasar a los demás.</td></tr>
 <tr><td>SJF</td><td>Ráfaga más corta</td><td>Reduce espera en ciertos escenarios, pero puede perjudicar trabajos largos.</td></tr>
+<tr><td>SJFT / SRTF</td><td>Menor tiempo restante</td><td>Es apropiativo: un proceso nuevo puede desplazar al que está ejecutándose.</td></tr>
 <tr><td>Prioridad</td><td>Mayor prioridad primero</td><td>Puede producir inanición; aging ayuda.</td></tr>
 <tr><td>Round Robin</td><td>Turnos con quantum</td><td>Todos avanzan por turnos.</td></tr>
 <tr><td>Multinivel</td><td>Varias colas</td><td>Separa tipos de procesos.</td></tr>
 <tr><td>MLFQ</td><td>Colas dinámicas</td><td>Los procesos pueden subir o bajar.</td></tr>
 </tbody></table></div></section>
 
-<section class="section" id="taller"><h2>14. Taller práctico</h2>
+<section class="section" id="taller"><h2>15. Taller práctico</h2>
 <div class="exercise"><b>1.</b> Explica con tus palabras programa, proceso, PID y PCB.</div>
 <div class="exercise"><b>2.</b> Dibuja: Nuevo → Listo → Ejecutando → Bloqueado → Listo → Ejecutando → Terminado.</div>
 <div class="exercise"><b>3.</b> FCFS: P1=6, P2=2, P3=4. Dibuja el Gantt.</div>
@@ -510,9 +635,10 @@ B -->|espera demasiado| A</div></div>
 <div class="exercise"><b>5.</b> Prioridad: P1=3, P2=1, P3=2. ¿Quién pasa primero?</div>
 <div class="exercise"><b>6.</b> Round Robin: P1=5, P2=3, P3=6, quantum=2. Escribe cada turno.</div>
 <div class="exercise"><b>7.</b> Agrega P4 a los códigos de Java y Python.</div>
-<div class="exercise"><b>8.</b> Compara FCFS, SJF y Round Robin con los mismos procesos.</div></section>
+<div class="exercise"><b>8.</b> Compara FCFS, SJF y Round Robin con los mismos procesos.</div>
+<div class="exercise"><b>9.</b> Resuelve el mismo ejemplo con SJFT / SRTF y marca cada cambio de proceso.</div></section>
 
-<section class="section" id="quiz"><h2>15. Repaso final</h2>
+<section class="section" id="quiz"><h2>16. Repaso final</h2>
 <div class="quiz" data-a="b"><b>¿Qué identifica de forma única a un proceso?</b><label><input type="radio" name="q1" value="a"> Quantum</label><label><input type="radio" name="q1" value="b"> PID</label><label><input type="radio" name="q1" value="c"> Ráfaga</label></div>
 <div class="quiz" data-a="c"><b>¿Qué algoritmo usa quantum?</b><label><input type="radio" name="q2" value="a"> FCFS</label><label><input type="radio" name="q2" value="b"> SJF</label><label><input type="radio" name="q2" value="c"> Round Robin</label></div>
 <div class="quiz" data-a="a"><b>¿Qué ayuda a evitar inanición?</b><label><input type="radio" name="q3" value="a"> Aging</label><label><input type="radio" name="q3" value="b"> PID</label><label><input type="radio" name="q3" value="c"> PCB</label></div>
@@ -559,7 +685,7 @@ function configurarMermaid(){
         noteBkgColor:"#fff7ed",
         noteBorderColor:"#fdba74"
       },
-      flowchart:{curve:"basis",htmlLabels:true}
+      flowchart:{curve:"basis",htmlLabels:false,padding:24,nodeSpacing:55,rankSpacing:70,useMaxWidth:false}
     });
     return true;
   }catch(e){
@@ -711,7 +837,7 @@ function configurarTabsQuizYNavegacion(){
     const g=b.dataset.g;
     document.querySelectorAll('.tab[data-g="'+g+'"]').forEach(x=>x.classList.remove("active"));
     b.classList.add("active");
-    const ids={obj:["objj","objp"],fcfs:["fcfsj","fcfsp"],sjf:["sjfj","sjfp"],prio:["prioj","priop"],rr:["rrj","rrp"],multi:["multij","multip"]};
+    const ids={obj:["objj","objp"],fcfs:["fcfsj","fcfsp"],sjf:["sjfj","sjfp"],sjft:["sjftj","sjftp"],prio:["prioj","priop"],rr:["rrj","rrp"],multi:["multij","multip"]};
     if(ids[g]){
       ids[g].forEach(id=>document.getElementById(id)?.classList.remove("active"));
       document.getElementById(b.dataset.t)?.classList.add("active");
