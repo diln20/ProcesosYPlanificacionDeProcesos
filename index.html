@@ -918,6 +918,27 @@ G --> H["Se comparan las tareas que quedan"]</div></div>
   </div>
 </div>
 
+<div class="codebox">
+  <div class="codebar">simulacion_srtf.js — llegada con setTimeout</div>
+  <pre><code class="language-javascript">// Primero empieza una tarea larga
+mostrarCpuSRTF("Tarea larga", 7, "long");
+
+// Esperamos 2 segundos para simular que llega otra tarea
+setTimeout(() => {
+
+    // Llega una tarea mas corta
+    mostrarColaSRTF([
+        { nombre: "Llamada corta", restante: 2, clase: "short" }
+    ]);
+
+    // Como 2 es menor que 5, SRTF cambia de proceso
+    mostrarCpuSRTF("Llamada corta", 2, "short");
+
+}, 2000);</code></pre>
+</div>
+
+<div class="note"><b>Que representa el timeout:</b> la tarea larga ya esta usando la CPU. Despues de 2 segundos llega una tarea mas corta. SRTF compara el tiempo restante y cambia la CPU hacia la tarea nueva.</div>
+
 
 <div class="tabs"><button class="tab active" data-g="srtf" data-t="srtfj">Java</button><button class="tab" data-g="srtf" data-t="srtfp">Python</button></div>
 
@@ -929,6 +950,14 @@ G --> H["Se comparan las tareas que quedan"]</div></div>
             new Proceso("Llamada corta", 2, 4, 1),
             new Proceso("Mensaje rapido", 4, 1, 1)
         };
+
+        // Solo para la demostracion:
+        // esperamos un poco para representar el paso del tiempo
+        try {
+            Thread.sleep(1000);
+        } catch (Exception error) {
+            System.out.println("Error en la pausa");
+        }
 
         int tiempo = 0;
         int terminados = 0;
@@ -971,11 +1000,17 @@ G --> H["Se comparan las tareas que quedan"]</div></div>
     }
 }</code></pre></div></div>
 
-<div id="srtfp" class="code-panel"><div class="codebox"><div class="codebar">srtf.py</div><pre><code class="language-python">lista = [
+<div id="srtfp" class="code-panel"><div class="codebox"><div class="codebar">srtf.py</div><pre><code class="language-python">import time
+
+lista = [
     Proceso("Tarea larga", 0, 7, 1),
     Proceso("Llamada corta", 2, 4, 1),
     Proceso("Mensaje rapido", 4, 1, 1)
 ]
+
+# Solo para la demostracion:
+# esperamos un segundo para representar el paso del tiempo
+time.sleep(1)
 
 tiempo = 0
 terminados = 0
