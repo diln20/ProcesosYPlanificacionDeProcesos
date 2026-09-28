@@ -71,6 +71,11 @@
 .diagram-error{min-height:150px;display:grid;place-items:center;text-align:center;padding:24px;color:#475569;background:#fff;border:1px dashed #cbd5e1;border-radius:14px}
 .diagram-error b{display:block;color:#334155;margin-bottom:4px}
 
+
+/* Seguridad visual: el contenido principal nunca debe quedar oculto */
+.section,.hero,.content{opacity:1!important;visibility:visible!important;transform:none}
+html.aos-enabled .section[data-aos]{opacity:1!important;visibility:visible!important}
+
 </style>
 </head>
 <body>
@@ -667,17 +672,19 @@ function calificar(){
 }
 
 document.addEventListener("DOMContentLoaded",async()=>{
+  // El contenido se muestra de inmediato; las librerías externas son mejoras opcionales.
+  document.documentElement.classList.add("aos-enabled");
   iniciarLibrerias();
   configurarTabsQuizYNavegacion();
-  document.querySelectorAll(".section").forEach(s=>s.setAttribute("data-aos","fade-up"));
 
-  // Mermaid se procesa primero. Si AOS, Tippy, Panzoom o Lucide fallan,
-  // los diagramas siguen funcionando.
+  // Mermaid se procesa de forma independiente. Si cualquier otra librería falla,
+  // el contenido del taller sigue visible.
   await renderizarDiagramas();
 
   crearModalDiagrama();
   mejorarDiagramas();
 
+  try{ if(window.AOS){ AOS.refreshHard(); } }catch(e){}
   try{ if(window.lucide) lucide.createIcons(); }catch(e){}
 });
 </script>
