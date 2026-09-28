@@ -64,6 +64,13 @@
 .diagram-modal-foot{padding:11px 16px;border-top:1px solid #dde5ef;background:#fff;color:#64748b;font-size:12px}
 @media(max-width:640px){.diagram-stage>.mermaid{min-width:480px}.diagram-actions{width:100%}.diagram-btn{flex:1;justify-content:center}}
 
+
+/* Evita mostrar el código Mermaid crudo mientras carga el diagrama */
+.mermaid:not([data-rendered="true"]){font-size:0!important;color:transparent!important;min-height:180px!important;position:relative}
+.mermaid:not([data-rendered="true"])::after{content:"Cargando diagrama…";font-size:13px;color:#64748b;position:absolute;inset:0;display:grid;place-items:center}
+.diagram-error{min-height:150px;display:grid;place-items:center;text-align:center;padding:24px;color:#475569;background:#fff;border:1px dashed #cbd5e1;border-radius:14px}
+.diagram-error b{display:block;color:#334155;margin-bottom:4px}
+
 </style>
 </head>
 <body>
@@ -446,28 +453,6 @@ B -->|espera demasiado| A</div></div>
 </main>
 </div>
 <script>
-mermaid.initialize({
-  startOnLoad:false,
-  theme:'base',
-  securityLevel:'loose',
-  themeVariables:{
-    primaryColor:'#7c3aed',
-    primaryTextColor:'#ffffff',
-    primaryBorderColor:'#6d28d9',
-    lineColor:'#7c3aed',
-    secondaryColor:'#0891b2',
-    tertiaryColor:'#ecfeff',
-    fontFamily:'Inter, Segoe UI, sans-serif',
-    clusterBkg:'#ffffff',
-    clusterBorder:'#c4b5fd',
-    edgeLabelBackground:'#ffffff',
-    noteBkgColor:'#fff7ed',
-    noteBorderColor:'#fdba74'
-  },
-  flowchart:{curve:'basis'}
-});
-hljs.highlightAll();
-
 function tema(){
   const r=document.documentElement;
   r.dataset.theme=r.dataset.theme==="light"?"dark":"light";
@@ -476,14 +461,201 @@ function tema(){
 const guardado=localStorage.getItem("tema-procesos");
 if(guardado)document.documentElement.dataset.theme=guardado;
 
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
-  const g=b.dataset.g;
-  document.querySelectorAll('.tab[data-g="'+g+'"]').forEach(x=>x.classList.remove("active"));
-  b.classList.add("active");
-  const ids={obj:["objj","objp"],fcfs:["fcfsj","fcfsp"],sjf:["sjfj","sjfp"],prio:["prioj","priop"],rr:["rrj","rrp"],multi:["multij","multip"]};
-  ids[g].forEach(id=>document.getElementById(id).classList.remove("active"));
-  document.getElementById(b.dataset.t).classList.add("active");
-});
+function iniciarLibrerias(){
+  try{ if(window.hljs) hljs.highlightAll(); }catch(e){ console.warn("Highlight.js:",e); }
+  try{ if(window.AOS) AOS.init({duration:650,once:true,offset:40}); }catch(e){ console.warn("AOS:",e); }
+  try{ if(window.lucide) lucide.createIcons(); }catch(e){ console.warn("Lucide:",e); }
+}
+
+function configurarMermaid(){
+  if(!window.mermaid) return false;
+  try{
+    mermaid.initialize({
+      startOnLoad:false,
+      theme:"base",
+      securityLevel:"loose",
+      suppressErrorRendering:true,
+      themeVariables:{
+        primaryColor:"#7c3aed",
+        primaryTextColor:"#ffffff",
+        primaryBorderColor:"#6d28d9",
+        lineColor:"#7c3aed",
+        secondaryColor:"#0891b2",
+        tertiaryColor:"#ecfeff",
+        fontFamily:"Inter, Segoe UI, sans-serif",
+        clusterBkg:"#ffffff",
+        clusterBorder:"#c4b5fd",
+        edgeLabelBackground:"#ffffff",
+        noteBkgColor:"#fff7ed",
+        noteBorderColor:"#fdba74"
+      },
+      flowchart:{curve:"basis",htmlLabels:true}
+    });
+    return true;
+  }catch(e){
+    console.error("No se pudo inicializar Mermaid",e);
+    return false;
+  }
+}
+
+async function renderizarDiagramas(){
+  const bloques=[...document.querySelectorAll(".mermaid")];
+  if(!configurarMermaid()){
+    bloques.forEach(b=>mostrarErrorDiagrama(b,"No se pudo cargar la librería de diagramas."));
+    return;
+  }
+
+  for(let i=0;i<bloques.length;i++){
+    const bloque=bloques[i];
+    const codigo=bloque.textContent.trim();
+    bloque.dataset.source=codigo;
+
+    try{
+      const id="mmd-"+Date.now()+"-"+i;
+      const resultado=await mermaid.render(id,codigo);
+      bloque.innerHTML=resultado.svg;
+      bloque.dataset.rendered="true";
+      if(resultado.bindFunctions) resultado.bindFunctions(bloque);
+    }catch(e){
+      console.error("Error Mermaid en diagrama",i,codigo,e);
+      mostrarErrorDiagrama(bloque,"Este diagrama no pudo renderizarse.");
+    }
+  }
+}
+
+function mostrarErrorDiagrama(bloque,mensaje){
+  bloque.dataset.rendered="true";
+  bloque.innerHTML='<div class="diagram-error"><div><b>Diagrama temporalmente no disponible</b><span>'+mensaje+'</span></div></div>';
+}
+
+function crearModalDiagrama(){
+  if(document.getElementById("diagramModal")) return;
+  const modal=document.createElement("div");
+  modal.id="diagramModal";
+  modal.className="diagram-modal";
+  modal.innerHTML=
+    '<div class="diagram-modal-card">'+
+      '<div class="diagram-modal-head">'+
+        '<div class="diagram-modal-title" id="diagramModalTitle">Diagrama ampliado</div>'+
+        '<div class="diagram-actions">'+
+          '<button class="diagram-btn" id="modalZoom">Acercar</button>'+
+          '<button class="diagram-btn" id="modalReset">Restablecer</button>'+
+          '<button class="diagram-btn" id="modalClose">Cerrar</button>'+
+        '</div>'+
+      '</div>'+
+      '<div class="diagram-modal-body"><div class="diagram-zoom-stage" id="diagramModalStage"></div></div>'+
+      '<div class="diagram-modal-foot">Arrastra el diagrama y usa la rueda del mouse para hacer zoom.</div>'+
+    '</div>';
+  document.body.appendChild(modal);
+  modal.addEventListener("click",e=>{if(e.target===modal)cerrarModalDiagrama();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")cerrarModalDiagrama();});
+}
+
+let modalPanzoom=null;
+function abrirModalDiagrama(titulo,svg){
+  crearModalDiagrama();
+  const modal=document.getElementById("diagramModal");
+  const stage=document.getElementById("diagramModalStage");
+  document.getElementById("diagramModalTitle").textContent=titulo;
+  stage.innerHTML='<div>'+svg+'</div>';
+  const target=stage.firstElementChild;
+  modal.classList.add("show");
+
+  try{
+    if(window.Panzoom){
+      modalPanzoom=Panzoom(target,{maxScale:3.5,minScale:.7,contain:"outside"});
+      stage.parentElement.onwheel=modalPanzoom.zoomWithWheel;
+    }
+  }catch(e){ console.warn("Panzoom modal:",e); }
+
+  document.getElementById("modalZoom").onclick=()=>modalPanzoom&&modalPanzoom.zoomIn();
+  document.getElementById("modalReset").onclick=()=>modalPanzoom&&modalPanzoom.reset();
+  document.getElementById("modalClose").onclick=cerrarModalDiagrama;
+}
+function cerrarModalDiagrama(){
+  const modal=document.getElementById("diagramModal");
+  if(modal)modal.classList.remove("show");
+}
+
+function mejorarDiagramas(){
+  document.querySelectorAll(".diagram").forEach((diagram,index)=>{
+    if(diagram.dataset.enhanced==="1") return;
+    const mermaidBlock=diagram.querySelector(".mermaid");
+    if(!mermaidBlock || !mermaidBlock.querySelector("svg")) return;
+
+    diagram.dataset.enhanced="1";
+    const section=diagram.closest(".section");
+    const title=section?.querySelector("h2")?.textContent?.trim()||("Diagrama "+(index+1));
+
+    const head=document.createElement("div");
+    head.className="diagram-head";
+    head.innerHTML=
+      '<div class="diagram-title-wrap">'+
+        '<div class="diagram-icon">↳</div>'+
+        '<div><div class="diagram-title"></div><div class="diagram-subtitle">Diagrama interactivo</div></div>'+
+      '</div>'+
+      '<div class="diagram-actions">'+
+        '<button class="diagram-btn" data-tip="Acercar el diagrama">＋ Acercar</button>'+
+        '<button class="diagram-btn" data-tip="Volver al tamaño original">↺ Restablecer</button>'+
+        '<button class="diagram-btn" data-tip="Abrir en una vista grande">⛶ Ampliar</button>'+
+      '</div>';
+    head.querySelector(".diagram-title").textContent=title;
+
+    const stage=document.createElement("div");
+    stage.className="diagram-stage";
+    const tip=document.createElement("div");
+    tip.className="diagram-tip";
+    tip.innerHTML='Arrastra para mover · pellizca o usa la rueda para zoom · <b>Ampliar</b> para verlo a pantalla grande.';
+
+    diagram.innerHTML="";
+    stage.appendChild(mermaidBlock);
+    diagram.append(head,stage,tip);
+
+    let pz=null;
+    try{
+      if(window.Panzoom){
+        pz=Panzoom(mermaidBlock,{maxScale:2.5,minScale:.8,contain:"outside"});
+        stage.addEventListener("wheel",pz.zoomWithWheel,{passive:false});
+      }
+    }catch(e){ console.warn("Panzoom:",e); }
+
+    const buttons=head.querySelectorAll(".diagram-btn");
+    buttons[0].onclick=()=>pz&&pz.zoomIn();
+    buttons[1].onclick=()=>pz&&pz.reset();
+    buttons[2].onclick=()=>abrirModalDiagrama(title,mermaidBlock.innerHTML);
+  });
+
+  try{
+    if(window.tippy){
+      tippy("[data-tip]",{
+        content:(el)=>el.dataset.tip,
+        animation:"scale",
+        placement:"top"
+      });
+    }
+  }catch(e){ console.warn("Tippy:",e); }
+}
+
+function configurarTabsQuizYNavegacion(){
+  document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
+    const g=b.dataset.g;
+    document.querySelectorAll('.tab[data-g="'+g+'"]').forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    const ids={obj:["objj","objp"],fcfs:["fcfsj","fcfsp"],sjf:["sjfj","sjfp"],prio:["prioj","priop"],rr:["rrj","rrp"],multi:["multij","multip"]};
+    if(ids[g]){
+      ids[g].forEach(id=>document.getElementById(id)?.classList.remove("active"));
+      document.getElementById(b.dataset.t)?.classList.add("active");
+    }
+  });
+
+  const sec=[...document.querySelectorAll(".section")],links=[...document.querySelectorAll(".nav a")];
+  if("IntersectionObserver" in window){
+    const io=new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id));
+    }),{rootMargin:"-25% 0px -65% 0px"});
+    sec.forEach(s=>io.observe(s));
+  }
+}
 
 function calificar(){
   let n=0;
@@ -494,115 +666,19 @@ function calificar(){
   document.getElementById("resultado").textContent=" Resultado: "+n+" / 3";
 }
 
-function crearModalDiagrama(){
-  if(document.getElementById('diagramModal')) return;
-  const modal=document.createElement('div');
-  modal.id='diagramModal';
-  modal.className='diagram-modal';
-  modal.innerHTML=`
-    <div class="diagram-modal-card">
-      <div class="diagram-modal-head">
-        <div class="diagram-modal-title" id="diagramModalTitle">Diagrama ampliado</div>
-        <div class="diagram-actions">
-          <button class="diagram-btn" id="modalZoom"><i data-lucide="zoom-in"></i> Acercar</button>
-          <button class="diagram-btn" id="modalReset"><i data-lucide="rotate-ccw"></i> Restablecer</button>
-          <button class="diagram-btn" id="modalClose"><i data-lucide="x"></i> Cerrar</button>
-        </div>
-      </div>
-      <div class="diagram-modal-body"><div class="diagram-zoom-stage" id="diagramModalStage"></div></div>
-      <div class="diagram-modal-foot">Arrastra el diagrama y usa la rueda del mouse para hacer zoom.</div>
-    </div>`;
-  document.body.appendChild(modal);
-  modal.addEventListener('click',e=>{if(e.target===modal)cerrarModalDiagrama()});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')cerrarModalDiagrama()});
-}
+document.addEventListener("DOMContentLoaded",async()=>{
+  iniciarLibrerias();
+  configurarTabsQuizYNavegacion();
+  document.querySelectorAll(".section").forEach(s=>s.setAttribute("data-aos","fade-up"));
 
-let modalPanzoom=null;
-function abrirModalDiagrama(titulo,svg){
-  crearModalDiagrama();
-  const modal=document.getElementById('diagramModal');
-  const stage=document.getElementById('diagramModalStage');
-  document.getElementById('diagramModalTitle').textContent=titulo;
-  stage.innerHTML='<div>'+svg+'</div>';
-  const target=stage.firstElementChild;
-  modal.classList.add('show');
-  try{
-    modalPanzoom=Panzoom(target,{maxScale:3.5,minScale:.7,contain:'outside'});
-    stage.parentElement.onwheel=modalPanzoom.zoomWithWheel;
-  }catch(e){}
-  document.getElementById('modalZoom').onclick=()=>modalPanzoom&&modalPanzoom.zoomIn();
-  document.getElementById('modalReset').onclick=()=>modalPanzoom&&modalPanzoom.reset();
-  document.getElementById('modalClose').onclick=cerrarModalDiagrama;
-  lucide.createIcons();
-}
-function cerrarModalDiagrama(){
-  const modal=document.getElementById('diagramModal');
-  if(modal)modal.classList.remove('show');
-}
+  // Mermaid se procesa primero. Si AOS, Tippy, Panzoom o Lucide fallan,
+  // los diagramas siguen funcionando.
+  await renderizarDiagramas();
 
-function mejorarDiagramas(){
-  document.querySelectorAll('.diagram').forEach((diagram,index)=>{
-    if(diagram.dataset.enhanced==='1')return;
-    diagram.dataset.enhanced='1';
-    const section=diagram.closest('.section');
-    const title=section?.querySelector('h2')?.textContent?.trim()||('Diagrama '+(index+1));
-    const mermaidBlock=diagram.querySelector('.mermaid');
-    if(!mermaidBlock)return;
-
-    const head=document.createElement('div');
-    head.className='diagram-head';
-    head.innerHTML=`
-      <div class="diagram-title-wrap">
-        <div class="diagram-icon"><i data-lucide="workflow"></i></div>
-        <div>
-          <div class="diagram-title">${title}</div>
-          <div class="diagram-subtitle">Diagrama interactivo</div>
-        </div>
-      </div>
-      <div class="diagram-actions">
-        <button class="diagram-btn" data-tip="Acercar el diagrama"><i data-lucide="zoom-in"></i> Acercar</button>
-        <button class="diagram-btn" data-tip="Volver al tamaño original"><i data-lucide="rotate-ccw"></i> Restablecer</button>
-        <button class="diagram-btn" data-tip="Abrir en una vista grande"><i data-lucide="maximize-2"></i> Ampliar</button>
-      </div>`;
-
-    const stage=document.createElement('div');
-    stage.className='diagram-stage';
-    const tip=document.createElement('div');
-    tip.className='diagram-tip';
-    tip.innerHTML='Arrastra para mover · rueda del mouse para zoom · <b>Ampliar</b> para estudiar el flujo con más detalle.';
-
-    diagram.innerHTML='';
-    stage.appendChild(mermaidBlock);
-    diagram.append(head,stage,tip);
-
-    let pz=null;
-    try{
-      pz=Panzoom(mermaidBlock,{maxScale:2.5,minScale:.8,contain:'outside'});
-      stage.addEventListener('wheel',pz.zoomWithWheel,{passive:false});
-    }catch(e){}
-
-    const buttons=head.querySelectorAll('.diagram-btn');
-    buttons[0].onclick=()=>pz&&pz.zoomIn();
-    buttons[1].onclick=()=>pz&&pz.reset();
-    buttons[2].onclick=()=>abrirModalDiagrama(title,mermaidBlock.innerHTML);
-  });
-
-  if(window.tippy)tippy('[data-tip]',{content:(el)=>el.dataset.tip,animation:'scale',placement:'top'});
-  lucide.createIcons();
-}
-
-document.addEventListener('DOMContentLoaded',async()=>{
-  AOS.init({duration:650,once:true,offset:40});
-  document.querySelectorAll('.section').forEach(s=>s.setAttribute('data-aos','fade-up'));
-  await mermaid.run({querySelector:'.mermaid'});
   crearModalDiagrama();
   mejorarDiagramas();
 
-  const sec=[...document.querySelectorAll(".section")],links=[...document.querySelectorAll(".nav a")];
-  const io=new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting)links.forEach(a=>a.classList.toggle("active",a.getAttribute("href")==="#"+e.target.id))
-  }),{rootMargin:"-25% 0px -65% 0px"});
-  sec.forEach(s=>io.observe(s));
+  try{ if(window.lucide) lucide.createIcons(); }catch(e){}
 });
 </script>
 </body>
