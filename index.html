@@ -1452,11 +1452,12 @@ function corregirEtiquetasMermaid(bloque){
 
           // Si la etiqueta no tiene texto real, la ocultamos.
           // Esto evita pequenos ovalos o recuadros vacios.
-          const contenidoTexto=(etiqueta.textContent || "").trim();
+          const contenidoTexto=(etiqueta.textContent || "")
+            .replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g,"");
 
           if(contenidoTexto === ""){
-            etiqueta.querySelectorAll("rect,.labelBkg").forEach((nodo)=>nodo.remove());
-            etiqueta.style.display="none";
+            // Eliminamos toda la etiqueta vacia, no solo el fondo.
+            etiqueta.remove();
             return;
           }
 
@@ -1513,6 +1514,53 @@ function corregirEtiquetasMermaid(bloque){
   }catch(e){}
 }
 
+function limpiarFigurasHuerfanasMermaid(bloque){
+  try{
+    const svg=bloque.querySelector("svg");
+    if(!svg)return;
+
+    requestAnimationFrame(()=>{
+      try{
+        const figuras=[...svg.querySelectorAll("rect,ellipse,circle")];
+
+        figuras.forEach((figura)=>{
+          // Nunca tocamos figuras que formen parte de un nodo real.
+          if(figura.closest(".node"))return;
+
+          const estilo=getComputedStyle(figura);
+          const stroke=(figura.getAttribute("stroke") || estilo.stroke || "").toLowerCase();
+
+          let caja=null;
+
+          try{
+            caja=figura.getBBox();
+          }catch(e){
+            return;
+          }
+
+          const esNaranja=
+            stroke.includes("fb923c") ||
+            stroke.includes("251, 146, 60") ||
+            stroke.includes("rgb(251, 146, 60)");
+
+          // Los fondos reales de etiquetas tienen texto.
+          const grupo=figura.closest(".edgeLabel");
+          const textoGrupo=grupo
+            ? (grupo.textContent || "").replace(/[\s\u00A0\u200B\u200C\u200D\uFEFF]/g,"")
+            : "";
+
+          // Eliminamos solo figuras pequenas, naranjas y sin texto asociado.
+          if(esNaranja && caja.width < 60 && caja.height < 40 && textoGrupo === ""){
+            figura.remove();
+          }
+        });
+      }catch(e){
+        console.warn("No se pudieron limpiar figuras huerfanas de Mermaid",e);
+      }
+    });
+  }catch(e){}
+}
+
 function ajustarViewBoxMermaid(bloque){
   try{
     const svg=bloque.querySelector("svg");
@@ -1564,6 +1612,7 @@ async function renderizarDiagramas(){
       bloque.dataset.rendered="true";
       if(resultado.bindFunctions) resultado.bindFunctions(bloque);
       corregirEtiquetasMermaid(bloque);
+      limpiarFigurasHuerfanasMermaid(bloque);
       ajustarViewBoxMermaid(bloque);
     }catch(e){
       console.error("Error Mermaid en diagrama",i,codigo,e);
