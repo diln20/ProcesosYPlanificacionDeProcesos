@@ -641,6 +641,110 @@ pre code *::selection{
   background:#64748b;
 }
 
+
+/* ===== Quiz interactivo ===== */
+.quiz-intro{
+  margin-bottom:18px;
+}
+.quiz-progress{
+  height:10px;
+  border-radius:999px;
+  overflow:hidden;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  margin:14px 0 22px;
+}
+.quiz-progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--a),var(--b));
+  transition:width .3s ease;
+}
+.quiz{
+  padding:16px;
+  margin:14px 0;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:var(--panel2);
+  transition:.2s ease;
+}
+.quiz.correcta{
+  border-color:#34d399;
+  box-shadow:0 0 0 3px rgba(52,211,153,.10);
+}
+.quiz.incorrecta{
+  border-color:#fb7185;
+  box-shadow:0 0 0 3px rgba(251,113,133,.10);
+}
+.quiz-pregunta{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  margin-bottom:10px;
+  font-weight:900;
+}
+.quiz-numero{
+  min-width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:linear-gradient(135deg,var(--a),var(--b));
+  color:#07101d;
+  font-size:12px;
+}
+.quiz label{
+  display:flex!important;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px!important;
+  margin:7px 0!important;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.quiz label:hover{
+  transform:translateX(4px);
+  border-color:var(--a)!important;
+}
+.quiz input{
+  accent-color:var(--a);
+}
+.quiz-feedback{
+  display:none;
+  margin-top:10px;
+  padding:9px 11px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:700;
+}
+.quiz.correcta .quiz-feedback{
+  display:block;
+  background:rgba(52,211,153,.12);
+  color:#34d399;
+}
+.quiz.incorrecta .quiz-feedback{
+  display:block;
+  background:rgba(251,113,133,.12);
+  color:#fb7185;
+}
+.quiz-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.quiz-resultado{
+  padding:14px 16px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--panel2);
+  font-weight:900;
+}
+.quiz-resultado strong{
+  color:var(--a);
+}
+
 </style>
 </head>
 <body>
@@ -666,7 +770,7 @@ pre code *::selection{
 <a href="#mlfq"><span class="num">14</span>MLFQ básico</a>
 <a href="#comparar"><span class="num">15</span>Comparación</a>
 <a href="#taller"><span class="num">16</span>Actividades</a>
-<a href="#quiz"><span class="num">17</span>Repaso final</a>
+<a href="#quiz"><span class="num">17</span>Quiz</a>
 </nav>
 </aside>
 <main>
@@ -1859,11 +1963,103 @@ B -->|espera demasiado| A</div></div>
 
 </section>
 
-<section class="section" id="quiz"><h2>17. Repaso final</h2>
-<div class="quiz" data-a="b"><b>¿Qué identifica de forma única a un proceso?</b><label><input type="radio" name="q1" value="a"> Quantum</label><label><input type="radio" name="q1" value="b"> PID</label><label><input type="radio" name="q1" value="c"> Ráfaga</label></div>
-<div class="quiz" data-a="c"><b>¿Qué algoritmo usa quantum?</b><label><input type="radio" name="q2" value="a"> FCFS</label><label><input type="radio" name="q2" value="b"> SJF</label><label><input type="radio" name="q2" value="c"> Round Robin</label></div>
-<div class="quiz" data-a="a"><b>¿Qué ayuda a evitar inanición?</b><label><input type="radio" name="q3" value="a"> Aging</label><label><input type="radio" name="q3" value="b"> PID</label><label><input type="radio" name="q3" value="c"> PCB</label></div>
-<button class="btn" onclick="calificar()">Calificar</button><b id="resultado"></b>
+<section class="section" id="quiz"><h2>17. Quiz de procesos y planificacion</h2>
+
+<div class="quiz-intro">
+  <p>Responde las preguntas usando lo aprendido en el taller. Al terminar, pulsa <b>Calificar quiz</b>. El sistema te mostrara cuales respuestas son correctas y una explicacion corta.</p>
+  <div class="goal"><b>Meta:</b> intenta obtener por lo menos 8 de 10 antes de continuar con el reto final.</div>
+</div>
+
+<div class="quiz-progress">
+  <div class="quiz-progress-bar" id="quizProgress"></div>
+</div>
+
+<div class="quiz" data-a="b">
+  <div class="quiz-pregunta"><span class="quiz-numero">1</span><span>¿Que dato identifica de forma unica a un proceso?</span></div>
+  <label><input type="radio" name="q1" value="a"> Quantum</label>
+  <label><input type="radio" name="q1" value="b"> PID</label>
+  <label><input type="radio" name="q1" value="c"> Rafaga</label>
+  <div class="quiz-feedback" data-ok="Correcto. El PID identifica a cada proceso." data-bad="Revisa la seccion de PID. Cada proceso tiene un identificador propio."></div>
+</div>
+
+<div class="quiz" data-a="c">
+  <div class="quiz-pregunta"><span class="quiz-numero">2</span><span>¿En que estado puede quedar un proceso mientras espera una operacion de entrada o salida?</span></div>
+  <label><input type="radio" name="q2" value="a"> Terminado</label>
+  <label><input type="radio" name="q2" value="b"> Nuevo</label>
+  <label><input type="radio" name="q2" value="c"> Bloqueado</label>
+  <div class="quiz-feedback" data-ok="Correcto. Un proceso puede quedar bloqueado mientras espera una operacion." data-bad="Piensa en un proceso que espera que termine una lectura, escritura o dispositivo."></div>
+</div>
+
+<div class="quiz" data-a="a">
+  <div class="quiz-pregunta"><span class="quiz-numero">3</span><span>En FCFS, ¿quien usa la CPU primero?</span></div>
+  <label><input type="radio" name="q3" value="a"> El que llega primero</label>
+  <label><input type="radio" name="q3" value="b"> El que dura menos</label>
+  <label><input type="radio" name="q3" value="c"> El de mayor prioridad</label>
+  <div class="quiz-feedback" data-ok="Correcto. FCFS respeta el orden de llegada." data-bad="Recuerda el ejemplo de la fila de la panaderia."></div>
+</div>
+
+<div class="quiz" data-a="b">
+  <div class="quiz-pregunta"><span class="quiz-numero">4</span><span>¿Que criterio usa SJF para escoger el siguiente proceso?</span></div>
+  <label><input type="radio" name="q4" value="a"> El PID mas pequeno</label>
+  <label><input type="radio" name="q4" value="b"> La rafaga mas corta</label>
+  <label><input type="radio" name="q4" value="c"> El que tenga mayor tiempo restante</label>
+  <div class="quiz-feedback" data-ok="Correcto. SJF busca el trabajo mas corto." data-bad="SJF significa Shortest Job First."></div>
+</div>
+
+<div class="quiz" data-a="c">
+  <div class="quiz-pregunta"><span class="quiz-numero">5</span><span>En el ejemplo de SJFT del taller, ¿que se tiene en cuenta ademas de la duracion?</span></div>
+  <label><input type="radio" name="q5" value="a"> El color del proceso</label>
+  <label><input type="radio" name="q5" value="b"> El nombre de la tarea</label>
+  <label><input type="radio" name="q5" value="c"> El tiempo de llegada</label>
+  <div class="quiz-feedback" data-ok="Correcto. Solo se comparan procesos que ya llegaron." data-bad="Revisa el ejemplo donde las tareas aparecen en distintos momentos."></div>
+</div>
+
+<div class="quiz" data-a="a">
+  <div class="quiz-pregunta"><span class="quiz-numero">6</span><span>La CPU ejecuta una descarga con 5 unidades restantes y llega la calculadora con 2. ¿Que hace SRTF?</span></div>
+  <label><input type="radio" name="q6" value="a"> Cambia a la calculadora</label>
+  <label><input type="radio" name="q6" value="b"> Ignora la calculadora</label>
+  <label><input type="radio" name="q6" value="c"> Termina todos los procesos</label>
+  <div class="quiz-feedback" data-ok="Correcto. SRTF puede interrumpir el proceso actual y escoger el de menor tiempo restante." data-bad="Compara 5 unidades restantes contra 2 unidades restantes."></div>
+</div>
+
+<div class="quiz" data-a="b">
+  <div class="quiz-pregunta"><span class="quiz-numero">7</span><span>¿Que algoritmo usa un quantum para repartir turnos?</span></div>
+  <label><input type="radio" name="q7" value="a"> SJF</label>
+  <label><input type="radio" name="q7" value="b"> Round Robin</label>
+  <label><input type="radio" name="q7" value="c"> FCFS</label>
+  <div class="quiz-feedback" data-ok="Correcto. Round Robin reparte la CPU por turnos." data-bad="Recuerda el ejemplo del columpio y los turnos de 2 minutos."></div>
+</div>
+
+<div class="quiz" data-a="c">
+  <div class="quiz-pregunta"><span class="quiz-numero">8</span><span>En este taller, si prioridad 1 es la mas alta, ¿quien se atiende primero?</span></div>
+  <label><input type="radio" name="q8" value="a"> Prioridad 3</label>
+  <label><input type="radio" name="q8" value="b"> Todos al mismo tiempo</label>
+  <label><input type="radio" name="q8" value="c"> Prioridad 1</label>
+  <div class="quiz-feedback" data-ok="Correcto. En los ejemplos del taller, un numero menor significa mayor prioridad." data-bad="Revisa el ejemplo de la clinica."></div>
+</div>
+
+<div class="quiz" data-a="a">
+  <div class="quiz-pregunta"><span class="quiz-numero">9</span><span>¿Que combinacion usa el ejemplo de colas multinivel del taller?</span></div>
+  <label><input type="radio" name="q9" value="a"> Alta = RR, media = SJF, baja = FIFO</label>
+  <label><input type="radio" name="q9" value="b"> Alta = FIFO, media = RR, baja = SJF</label>
+  <label><input type="radio" name="q9" value="c"> Todas usan el mismo algoritmo</label>
+  <div class="quiz-feedback" data-ok="Correcto. Cada cola tiene una estrategia diferente." data-bad="Revisa las tres tarjetas de la seccion de colas multinivel."></div>
+</div>
+
+<div class="quiz" data-a="b">
+  <div class="quiz-pregunta"><span class="quiz-numero">10</span><span>¿Que puede ocurrir en MLFQ si un proceso espera demasiado?</span></div>
+  <label><input type="radio" name="q10" value="a"> Siempre se elimina</label>
+  <label><input type="radio" name="q10" value="b"> Puede subir de cola mediante aging</label>
+  <label><input type="radio" name="q10" value="c"> Su PID cambia a cero</label>
+  <div class="quiz-feedback" data-ok="Correcto. El aging ayuda a evitar que un proceso espere indefinidamente." data-bad="Revisa el concepto de aging en MLFQ."></div>
+</div>
+
+<div class="quiz-actions">
+  <button class="btn" onclick="calificar()">Calificar quiz</button>
+  <button class="btn" onclick="reiniciarQuiz()">Reiniciar</button>
+  <div class="quiz-resultado" id="resultado">Resultado: <strong>sin calificar</strong></div>
+</div>
+
 </section>
 <div class="footer">Taller de Procesos y Planificación · Java + Python · Nivel inicial</div>
 </div>
@@ -2470,20 +2666,149 @@ function iniciarSimulacionSRTF(){
   },6100));
 }
 
-function calificar(){
-  let n=0;
-  document.querySelectorAll(".quiz").forEach(q=>{
-    const x=q.querySelector("input:checked");
-    if(x&&x.value===q.dataset.a)n++;
-  });
-  document.getElementById("resultado").textContent=" Resultado: "+n+" / 3";
+function actualizarProgresoQuiz(){
+  const preguntas=[...document.querySelectorAll("#quiz .quiz")];
+  let respondidas=0;
+
+  for(let i=0;i<preguntas.length;i++){
+    if(preguntas[i].querySelector("input:checked")){
+      respondidas++;
+    }
+  }
+
+  const porcentaje=preguntas.length
+    ? (respondidas/preguntas.length)*100
+    : 0;
+
+  const barra=document.getElementById("quizProgress");
+
+  if(barra){
+    barra.style.width=porcentaje+"%";
+  }
 }
+
+
+function calificar(){
+  const preguntas=[...document.querySelectorAll("#quiz .quiz")];
+
+  let correctas=0;
+  let respondidas=0;
+
+  for(let i=0;i<preguntas.length;i++){
+
+    const pregunta=preguntas[i];
+    const seleccion=pregunta.querySelector("input:checked");
+    const feedback=pregunta.querySelector(".quiz-feedback");
+
+    pregunta.classList.remove("correcta","incorrecta");
+
+    if(!seleccion){
+
+      if(feedback){
+        feedback.textContent="Falta responder esta pregunta.";
+      }
+
+      pregunta.classList.add("incorrecta");
+      continue;
+    }
+
+    respondidas++;
+
+    if(seleccion.value===pregunta.dataset.a){
+
+      correctas++;
+      pregunta.classList.add("correcta");
+
+      if(feedback){
+        feedback.textContent=feedback.dataset.ok;
+      }
+
+    }else{
+
+      pregunta.classList.add("incorrecta");
+
+      if(feedback){
+        feedback.textContent=feedback.dataset.bad;
+      }
+    }
+  }
+
+  const resultado=document.getElementById("resultado");
+
+  let mensaje="";
+
+  if(correctas===preguntas.length){
+    mensaje="Excelente. Dominaste todos los temas.";
+  }else if(correctas>=8){
+    mensaje="Muy bien. Solo necesitas repasar algunos detalles.";
+  }else if(correctas>=6){
+    mensaje="Vas bien. Revisa las preguntas marcadas en rojo.";
+  }else{
+    mensaje="Conviene repasar los algoritmos y volver a intentarlo.";
+  }
+
+  if(resultado){
+    resultado.innerHTML=
+      'Resultado: <strong>'+
+      correctas+' / '+preguntas.length+
+      '</strong> · '+mensaje;
+  }
+
+  actualizarProgresoQuiz();
+}
+
+
+function reiniciarQuiz(){
+  const preguntas=[...document.querySelectorAll("#quiz .quiz")];
+
+  for(let i=0;i<preguntas.length;i++){
+
+    const pregunta=preguntas[i];
+
+    pregunta.classList.remove("correcta","incorrecta");
+
+    const opciones=pregunta.querySelectorAll("input");
+
+    for(let j=0;j<opciones.length;j++){
+      opciones[j].checked=false;
+    }
+
+    const feedback=pregunta.querySelector(".quiz-feedback");
+
+    if(feedback){
+      feedback.textContent="";
+    }
+  }
+
+  const resultado=document.getElementById("resultado");
+
+  if(resultado){
+    resultado.innerHTML='Resultado: <strong>sin calificar</strong>';
+  }
+
+  const barra=document.getElementById("quizProgress");
+
+  if(barra){
+    barra.style.width="0%";
+  }
+}
+
+
+function configurarQuiz(){
+  const opciones=document.querySelectorAll("#quiz input[type=radio]");
+
+  for(let i=0;i<opciones.length;i++){
+    opciones[i].addEventListener("change",actualizarProgresoQuiz);
+  }
+}
+
 
 document.addEventListener("DOMContentLoaded",async()=>{
   // El contenido se muestra de inmediato; las librerías externas son mejoras opcionales.
   document.documentElement.classList.add("aos-enabled");
   iniciarLibrerias();
   configurarTabsQuizYNavegacion();
+  configurarQuiz();
   reiniciarSimulacionSRTF();
 
   // Mermaid se procesa de forma independiente. Si cualquier otra librería falla,
