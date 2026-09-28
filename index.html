@@ -1512,7 +1512,7 @@ function copiarEstilosSvgAlModal(origenSvg, destinoSvg){
     const origenNodos=origenSvg.querySelectorAll("*");
     const destinoNodos=destinoSvg.querySelectorAll("*");
 
-    for(let i=0;i&lt;origenNodos.length &amp;&amp; i&lt;destinoNodos.length;i++){
+    for(let i=0;i<origenNodos.length && i<destinoNodos.length;i++){
       const estilo=getComputedStyle(origenNodos[i]);
 
       destinoNodos[i].style.fill=estilo.fill;
@@ -1556,7 +1556,7 @@ function abrirModalDiagrama(titulo,svg){
 
   const destinoSvg=target.querySelector("svg");
 
-  if(origenActivo &amp;&amp; destinoSvg){
+  if(origenActivo && destinoSvg){
     copiarEstilosSvgAlModal(origenActivo,destinoSvg);
   }
 
