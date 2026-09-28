@@ -253,6 +253,28 @@ pre code{
   }
 }
 
+
+/* ===== Controles funcionales del modal de diagramas ===== */
+.diagram-modal-body{
+  overflow:auto!important;
+}
+.diagram-zoom-stage{
+  min-width:100%;
+  min-height:100%;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+}
+.diagram-modal-content{
+  display:inline-block;
+  transform-origin:top left;
+  transition:transform .18s ease;
+  cursor:grab;
+  user-select:none;
+}
+.diagram-modal-content.dragging{
+  cursor:grabbing;
+}
+
 </style>
 </head>
 <body>
@@ -861,30 +883,113 @@ function crearModalDiagrama(){
   document.addEventListener("keydown",e=>{if(e.key==="Escape")cerrarModalDiagrama();});
 }
 
-let modalPanzoom=null;
+let modalScale=1;
+let modalOffsetX=0;
+let modalOffsetY=0;
+let modalDragging=false;
+let modalStartX=0;
+let modalStartY=0;
+
+function aplicarTransformModal(){
+  const target=document.querySelector("#diagramModalStage .diagram-modal-content");
+  if(!target)return;
+  target.style.transform=
+    "translate("+modalOffsetX+"px,"+modalOffsetY+"px) scale("+modalScale+")";
+}
+
 function abrirModalDiagrama(titulo,svg){
   crearModalDiagrama();
+
   const modal=document.getElementById("diagramModal");
   const stage=document.getElementById("diagramModalStage");
+  const body=stage.parentElement;
+
   document.getElementById("diagramModalTitle").textContent=titulo;
-  stage.innerHTML='<div style="padding:40px;min-width:900px">'+svg+'</div>';
-  const target=stage.firstElementChild;
+
+  stage.innerHTML=
+    '<div class="diagram-modal-content" style="padding:40px;min-width:900px">'+
+    svg+
+    '</div>';
+
+  modalScale=1;
+  modalOffsetX=0;
+  modalOffsetY=0;
+  aplicarTransformModal();
+
   modal.classList.add("show");
 
-  try{
-    if(window.Panzoom){
-      modalPanzoom=Panzoom(target,{maxScale:3.5,minScale:.7,contain:"outside"});
-      stage.parentElement.onwheel=modalPanzoom.zoomWithWheel;
-    }
-  }catch(e){ console.warn("Panzoom modal:",e); }
+  const target=stage.querySelector(".diagram-modal-content");
 
-  document.getElementById("modalZoom").onclick=()=>modalPanzoom&&modalPanzoom.zoomIn();
-  document.getElementById("modalReset").onclick=()=>modalPanzoom&&modalPanzoom.reset();
-  document.getElementById("modalClose").onclick=cerrarModalDiagrama;
+  document.getElementById("modalZoom").onclick=()=>{
+    modalScale=Math.min(3,modalScale+0.25);
+    aplicarTransformModal();
+  };
+
+  document.getElementById("modalReset").onclick=()=>{
+    modalScale=1;
+    modalOffsetX=0;
+    modalOffsetY=0;
+    body.scrollLeft=0;
+    body.scrollTop=0;
+    aplicarTransformModal();
+  };
+
+  document.getElementById("modalClose").onclick=()=>{
+    cerrarModalDiagrama();
+  };
+
+  body.onwheel=(event)=>{
+    if(!event.ctrlKey && Math.abs(event.deltaY)<2)return;
+    event.preventDefault();
+
+    if(event.deltaY<0){
+      modalScale=Math.min(3,modalScale+0.15);
+    }else{
+      modalScale=Math.max(0.6,modalScale-0.15);
+    }
+    aplicarTransformModal();
+  };
+
+  target.onpointerdown=(event)=>{
+    modalDragging=true;
+    modalStartX=event.clientX-modalOffsetX;
+    modalStartY=event.clientY-modalOffsetY;
+    target.classList.add("dragging");
+    target.setPointerCapture(event.pointerId);
+  };
+
+  target.onpointermove=(event)=>{
+    if(!modalDragging)return;
+    modalOffsetX=event.clientX-modalStartX;
+    modalOffsetY=event.clientY-modalStartY;
+    aplicarTransformModal();
+  };
+
+  target.onpointerup=(event)=>{
+    modalDragging=false;
+    target.classList.remove("dragging");
+    try{target.releasePointerCapture(event.pointerId);}catch(e){}
+  };
+
+  target.onpointercancel=()=>{
+    modalDragging=false;
+    target.classList.remove("dragging");
+  };
 }
+
 function cerrarModalDiagrama(){
   const modal=document.getElementById("diagramModal");
-  if(modal)modal.classList.remove("show");
+  if(!modal)return;
+
+  modal.classList.remove("show");
+
+  const stage=document.getElementById("diagramModalStage");
+  if(stage)stage.innerHTML="";
+
+  modalScale=1;
+  modalOffsetX=0;
+  modalOffsetY=0;
+  modalDragging=false;
 }
 
 function mejorarDiagramas(){
