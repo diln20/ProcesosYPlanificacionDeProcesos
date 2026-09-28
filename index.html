@@ -1574,16 +1574,144 @@ B -->|espera demasiado| A</div></div>
 </tbody></table></div></section>
 
 <section class="section" id="taller"><h2>16. Taller practico</h2>
-<div class="exercise"><b>1.</b> Explica con tus palabras programa, proceso, PID y PCB.</div>
-<div class="exercise"><b>2.</b> Dibuja: Nuevo → Listo → Ejecutando → Bloqueado → Listo → Ejecutando → Terminado.</div>
-<div class="exercise"><b>3.</b> FCFS: P1=6, P2=2, P3=4. Dibuja el Gantt.</div>
-<div class="exercise"><b>4.</b> SJF: usa los mismos procesos y cambia el orden.</div>
-<div class="exercise"><b>5.</b> Prioridad: P1=3, P2=1, P3=2. ¿Quién pasa primero?</div>
-<div class="exercise"><b>6.</b> Round Robin: P1=5, P2=3, P3=6, quantum=2. Escribe cada turno.</div>
-<div class="exercise"><b>7.</b> Agrega P4 a los códigos de Java y Python.</div>
-<div class="exercise"><b>8.</b> Compara FCFS, SJF y Round Robin con los mismos procesos.</div>
-<div class="exercise"><b>9.</b> Resuelve un ejemplo con SJFT usando tiempos de llegada.</div>
-<div class="exercise"><b>10.</b> Resuelve el mismo ejemplo con SRTF y marca cada interrupcion.</div></section>
+
+<p>Estas actividades estan pensadas para resolverlas despues de revisar cada algoritmo. Primero se trabaja con situaciones sencillas y luego se relacionan con lo que hace un sistema operativo.</p>
+
+<div class="goal"><b>Forma de trabajo:</b> resuelve primero a mano, dibuja la cola o el diagrama y despues modifica el codigo Java para comprobar el resultado.</div>
+
+<h3>Actividad 1 — Reconocer un proceso en el sistema operativo</h3>
+<div class="exercise">
+  <b>Situacion:</b> abre el Administrador de tareas de Windows y busca tres aplicaciones que esten ejecutandose.<br><br>
+  <b>Haz lo siguiente:</b><br>
+  1. Escribe el nombre de tres procesos.<br>
+  2. Busca su PID si aparece disponible.<br>
+  3. Indica cual crees que esta usando mas CPU.<br>
+  4. Explica con tus palabras por que una aplicacion abierta se convierte en un proceso.
+</div>
+
+<h3>Actividad 2 — Estados de un proceso</h3>
+<div class="exercise">
+  Imagina que abres un navegador, esperas a que cargue una pagina y luego lo cierras.<br><br>
+  Dibuja el recorrido usando estos estados:<br>
+  <b>Nuevo → Listo → Ejecutando → Bloqueado → Listo → Ejecutando → Terminado</b>.<br><br>
+  Escribe al lado de cada cambio que podria estar ocurriendo.
+</div>
+
+<h3>Actividad 3 — FCFS con una fila de panaderia</h3>
+<div class="exercise">
+  Llegan cuatro personas:<br>
+  <b>Ana = 4 min</b>, <b>Luis = 2 min</b>, <b>Sara = 3 min</b>, <b>Pedro = 1 min</b>.<br><br>
+  1. Atiendelos usando FCFS.<br>
+  2. Dibuja la linea de tiempo.<br>
+  3. Indica quien termina primero y quien termina ultimo.<br>
+  4. Cambia esos nombres en el codigo Java de FCFS.
+</div>
+
+<h3>Actividad 4 — SJF con tareas de la casa</h3>
+<div class="exercise">
+  Tienes estas tareas:<br>
+  <b>Ordenar habitacion = 8</b>, <b>Lavar plato = 3</b>, <b>Guardar cuaderno = 1</b>, <b>Sacar basura = 4</b>.<br><br>
+  1. Ordenalas usando SJF.<br>
+  2. Escribe el orden en que se realizan.<br>
+  3. Agrega <code>Sacar basura</code> al codigo Java.<br>
+  4. Comprueba si el programa obtiene el mismo orden.
+</div>
+
+<h3>Actividad 5 — SJFT con tiempos de llegada</h3>
+<div class="exercise">
+  Llegan estas tareas:<br>
+  <b>Imprimir trabajo:</b> llegada 0, duracion 6.<br>
+  <b>Guardar archivo:</b> llegada 2, duracion 2.<br>
+  <b>Abrir documento:</b> llegada 3, duracion 4.<br><br>
+  1. Decide que tarea se ejecuta primero.<br>
+  2. Cada vez que una tarea termine, revisa cuales ya llegaron.<br>
+  3. Escoge entre ellas la de menor duracion.<br>
+  4. Dibuja la linea de tiempo.
+</div>
+
+<h3>Actividad 6 — SRTF: llega un proceso nuevo</h3>
+<div class="exercise">
+  La CPU empieza ejecutando <b>Descargar archivo</b> con tiempo restante 7.<br>
+  Despues de 2 segundos llega <b>Abrir calculadora</b> con tiempo restante 2.<br><br>
+  1. Indica que proceso debe usar la CPU cuando llega la calculadora.<br>
+  2. Explica por que SRTF puede interrumpir la descarga.<br>
+  3. Cambia el timeout de <code>2000</code> a <code>3000</code> en Java.<br>
+  4. Ejecuta nuevamente y observa en que momento aparece el nuevo proceso.<br>
+  5. Cambia la calculadora para que tenga tiempo restante 8. ¿Debe desplazar a la descarga?
+</div>
+
+<h3>Actividad 7 — Prioridad en una clinica</h3>
+<div class="exercise">
+  Llegan tres personas:<br>
+  <b>Control normal = prioridad 3</b>, <b>Emergencia = prioridad 1</b>, <b>Consulta rapida = prioridad 2</b>.<br><br>
+  1. Ordena la atencion.<br>
+  2. Recuerda que en este taller <b>1 es la prioridad mas alta</b>.<br>
+  3. Agrega un cuarto paciente con prioridad 1.<br>
+  4. Explica que podria ocurrir con los pacientes de prioridad baja si siguen llegando emergencias.
+</div>
+
+<h3>Actividad 8 — Round Robin con un columpio</h3>
+<div class="exercise">
+  Tres personas quieren usar un columpio:<br>
+  <b>Ana = 5 min</b>, <b>Luis = 3 min</b>, <b>Sara = 4 min</b>.<br>
+  Usa un <b>quantum de 2 minutos</b>.<br><br>
+  1. Escribe turno por turno quien usa el columpio.<br>
+  2. Resta el tiempo utilizado en cada turno.<br>
+  3. Marca cuando termina cada persona.<br>
+  4. Repite el ejercicio usando quantum 1 y compara.
+</div>
+
+<h3>Actividad 9 — Colas multinivel</h3>
+<div class="exercise">
+  Clasifica estas tareas en una de las tres colas:<br>
+  <b>Responder chat</b>, <b>Guardar archivo</b>, <b>Hacer backup</b>, <b>Abrir calculadora</b>, <b>Copiar 500 archivos</b>, <b>Imprimir una hoja</b>.<br><br>
+  Usa estas reglas:<br>
+  <b>Cola alta → Round Robin</b><br>
+  <b>Cola media → SJF</b><br>
+  <b>Cola baja → FIFO / FCFS</b><br><br>
+  Luego explica por que colocaste cada tarea en esa cola.
+</div>
+
+<h3>Actividad 10 — MLFQ</h3>
+<div class="exercise">
+  Imagina que <b>Compilar proyecto</b> empieza en la cola alta y utiliza todo su quantum varias veces.<br><br>
+  1. Dibuja como podria bajar de cola.<br>
+  2. Ahora imagina que <b>Actualizar antivirus</b> lleva demasiado tiempo esperando en la cola baja.<br>
+  3. Dibuja como el aging podria ayudarlo a subir.<br>
+  4. Explica con tus palabras por que MLFQ mueve procesos entre colas.
+</div>
+
+<h3>Actividad 11 — Modificar el objeto Proceso</h3>
+<div class="exercise">
+  Agrega un nuevo atributo al objeto <code>Proceso</code>:<br><br>
+  <code>String descripcion;</code><br><br>
+  Despues modifica el constructor y crea tres procesos con una descripcion sencilla.<br>
+  Ejemplo: <code>"Programa abierto por el usuario"</code>.
+</div>
+
+<h3>Actividad 12 — Comparar algoritmos</h3>
+<div class="exercise">
+  Usa los mismos tres trabajos:<br>
+  <b>A = 6</b>, <b>B = 2</b>, <b>C = 4</b>.<br><br>
+  Resuelvelos con:<br>
+  <b>FCFS</b>, <b>SJF</b> y <b>Round Robin con quantum 2</b>.<br><br>
+  Dibuja las tres lineas de tiempo y escribe una diferencia que observes entre los resultados.
+</div>
+
+<h3>Reto final — Mini simulador del planificador</h3>
+<div class="exercise">
+  Toma el ejemplo Java de SRTF y agrega un tercer proceso que llegue despues de otro timeout.<br><br>
+  Por ejemplo:<br>
+  <code>Abrir bloc de notas</code> llega despues de 4 segundos y necesita 1 unidad de CPU.<br><br>
+  El programa debe mostrar:<br>
+  1. Cuando llega cada proceso.<br>
+  2. Cuando entra a la cola de listos.<br>
+  3. Que proceso escoge el planificador.<br>
+  4. Que proceso esta usando la CPU.<br>
+  5. Cuando termina cada proceso.
+</div>
+
+</section>
 
 <section class="section" id="quiz"><h2>17. Repaso final</h2>
 <div class="quiz" data-a="b"><b>¿Qué identifica de forma única a un proceso?</b><label><input type="radio" name="q1" value="a"> Quantum</label><label><input type="radio" name="q1" value="b"> PID</label><label><input type="radio" name="q1" value="c"> Ráfaga</label></div>
