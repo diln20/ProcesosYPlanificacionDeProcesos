@@ -495,6 +495,152 @@ pre code{
   .srtf-sim-grid{grid-template-columns:1fr}
 }
 
+
+/* ===== Codigo mas colorido estilo editor ===== */
+.codebox{
+  box-shadow:0 12px 28px rgba(2,6,23,.20)!important;
+}
+.codebar{
+  position:relative;
+  padding-left:78px!important;
+  font-weight:800!important;
+  letter-spacing:.01em;
+}
+.codebar::before{
+  content:"●  ●  ●";
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:11px;
+  letter-spacing:2px;
+  background:linear-gradient(90deg,#ff5f56 0 31%,#ffbd2e 32% 64%,#27c93f 65% 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+pre,
+pre code,
+code.hljs,
+.hljs{
+  background:#09111f!important;
+  color:#e6edf7!important;
+  font-family:"Cascadia Code","Fira Code","JetBrains Mono",Consolas,monospace!important;
+  font-size:13.5px!important;
+  line-height:1.72!important;
+  tab-size:4;
+}
+
+/* Palabras reservadas: public, class, if, while, for, return... */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-section{
+  color:#ff79c6!important;
+  font-weight:800!important;
+}
+
+/* Tipos y clases: String, int, ArrayList, Proceso... */
+.hljs-type,
+.hljs-title.class_,
+.hljs-class .hljs-title,
+.hljs-built_in{
+  color:#8be9fd!important;
+  font-weight:750!important;
+}
+
+/* Metodos y funciones */
+.hljs-title.function_,
+.hljs-function .hljs-title{
+  color:#50fa7b!important;
+  font-weight:750!important;
+}
+
+/* Texto entre comillas */
+.hljs-string,
+.hljs-attr,
+.hljs-template-tag,
+.hljs-template-variable{
+  color:#f1fa8c!important;
+}
+
+/* Numeros */
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet{
+  color:#bd93f9!important;
+  font-weight:700!important;
+}
+
+/* true, false, null, None */
+.hljs-literal{
+  color:#ffb86c!important;
+  font-weight:750!important;
+}
+
+/* Variables, parametros y propiedades */
+.hljs-variable,
+.hljs-variable.language_,
+.hljs-property,
+.hljs-params{
+  color:#f8f8f2!important;
+}
+
+/* Comentarios */
+.hljs-comment,
+.hljs-quote{
+  color:#7dd3a7!important;
+  font-style:italic!important;
+  opacity:.95;
+}
+
+/* Anotaciones, imports especiales y metadatos */
+.hljs-meta,
+.hljs-doctag{
+  color:#ffb86c!important;
+}
+
+/* Operadores o sustituciones cuando Highlight.js los detecta */
+.hljs-operator,
+.hljs-subst{
+  color:#ff92df!important;
+}
+
+/* Expresiones regulares y escapes */
+.hljs-regexp,
+.hljs-escape{
+  color:#ff5555!important;
+}
+
+/* Enlaces o nombres especiales */
+.hljs-link,
+.hljs-name{
+  color:#67e8f9!important;
+}
+
+/* Seleccion de texto dentro del codigo */
+pre code::selection,
+pre code *::selection{
+  background:#334155!important;
+  color:#ffffff!important;
+}
+
+/* Scrollbar del editor */
+.codebox pre::-webkit-scrollbar{
+  height:10px;
+  width:10px;
+}
+.codebox pre::-webkit-scrollbar-track{
+  background:#0f172a;
+}
+.codebox pre::-webkit-scrollbar-thumb{
+  background:#475569;
+  border-radius:999px;
+}
+.codebox pre::-webkit-scrollbar-thumb:hover{
+  background:#64748b;
+}
+
 </style>
 </head>
 <body>
